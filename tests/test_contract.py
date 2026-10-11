@@ -6,12 +6,14 @@ import tdmread
 # contract and the test below fails if the module and this list disagree.
 PUBLIC_API: list[str] = [
     "Channel",
+    "FileMetadata",
     "Group",
     "TdmError",
     "TdmFile",
     "TdmFileNotFoundError",
     "UnsupportedTdmError",
     "read_tdm",
+    "supported_value_types",
 ]
 
 
