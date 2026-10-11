@@ -48,7 +48,7 @@ def test_real_channel_values_match_the_sine_oracle() -> None:
     base = _sine(0.01)
     for name, scale in (("A = 1", 1.0), ("A = 2", 2.0), ("A = 4", 4.0), ("A = 16", 16.0)):
         channel = amps.channel(name)
-        assert channel.data == channel.data  # concrete tuple, fully materialised
+        assert isinstance(channel.data, tuple) and len(channel.data) == 1000
         error = max(abs(channel.data[i] - scale * base[i]) for i in range(1000))
         assert error < 1e-9, f"{name} deviates from {scale} * sin(0.01 * i) by {error}"
 
