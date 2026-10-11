@@ -2,24 +2,28 @@
 
 from __future__ import annotations
 
-import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from ._binary import byte_order_prefix, decode_block
-from ._errors import TdmError, TdmFileNotFoundError, UnsupportedTdmError
+from ._binary import byte_order_prefix
+from ._errors import TdmError, TdmFileNotFoundError
 from ._model import Channel, Group, TdmFile
-
-_REF = re.compile(r'id\("([^"]+)"\)')
+from ._sequence import Sequence, read_sequence
+from ._xml import child_text, one_ref, read_metadata, refs
 
 StrPath = str | Path
+
+_ElementMap = dict[str | None, ET.Element]
 
 
 def read_tdm(tdm_path: StrPath, tdx_path: StrPath | None = None) -> TdmFile:
     """Read a TDM dataset from `tdm_path`, locating the .tdx by the header reference.
 
-    Pass `tdx_path` to override the data file the header points to. Raises
-    :class:`TdmFileNotFoundError` if either file is missing, and
+    Pass `tdx_path` to override the data file the header points to. Explicit channels
+    are decoded from the .tdx; implicit-linear channels are generated and need no .tdx,
+    so the data file is only read when at least one explicit block refers to it.
+
+    Raises :class:`TdmFileNotFoundError` when a required file is missing and
     :class:`UnsupportedTdmError` for features outside the supported subset.
     """
     header = Path(tdm_path)
@@ -27,16 +31,17 @@ def read_tdm(tdm_path: StrPath, tdx_path: StrPath | None = None) -> TdmFile:
         raise TdmFileNotFoundError(f"TDM header not found: {header}")
 
     root = ET.parse(header).getroot()
+    # A purely implicit dataset generates every axis and has no binary file descriptor.
     file_el = root.find(".//{*}file")
-    if file_el is None:
-        raise TdmError("the .tdm header has no <file> block descriptor")
-    prefix = byte_order_prefix(file_el.get("byteOrder", "littleEndian"))
+    byte_order = file_el.get("byteOrder", "littleEndian") if file_el is not None else "littleEndian"
+    prefix = byte_order_prefix(byte_order)
 
-    data = _read_tdx(header, file_el, tdx_path)
-    blocks = {b.get("id"): b for b in root.findall(".//{*}file/{*}block")}
-    by_id = {el.get("id"): el for el in root.iter() if el.get("id")}
+    blocks: _ElementMap = {b.get("id"): b for b in root.findall(".//{*}file/{*}block")}
+    by_id: _ElementMap = {el.get("id"): el for el in root.iter() if el.get("id")}
+    data = _read_tdx(header, file_el, tdx_path) if (blocks and file_el is not None) else b""
 
-    return TdmFile(groups=tuple(_read_groups(root, by_id, blocks, data, prefix)))
+    groups = tuple(_read_groups(root, by_id, blocks, data, prefix))
+    return TdmFile(groups=groups, metadata=read_metadata(root))
 
 
 def _read_tdx(header: Path, file_el: ET.Element, override: StrPath | None) -> bytes:
@@ -55,88 +60,62 @@ def _read_tdx(header: Path, file_el: ET.Element, override: StrPath | None) -> by
 
 def _read_groups(
     root: ET.Element,
-    by_id: dict[str | None, ET.Element],
-    blocks: dict[str | None, ET.Element],
+    by_id: _ElementMap,
+    blocks: _ElementMap,
     data: bytes,
     prefix: str,
 ) -> list[Group]:
     tdm_root = root.find(".//{*}tdm_root")
-    group_ids = _refs(_child_text(tdm_root, "channelgroups")) if tdm_root is not None else []
+    group_ids = refs(child_text(tdm_root, "channelgroups")) if tdm_root is not None else []
     groups = []
     for gid in group_ids:
         group_el = by_id.get(gid)
         if group_el is None:
             continue
-        name = _child_text(group_el, "name")
         channels = [
             _read_channel(by_id[cid], by_id, blocks, data, prefix)
-            for cid in _refs(_child_text(group_el, "channels"))
+            for cid in refs(child_text(group_el, "channels"))
             if cid in by_id
         ]
-        groups.append(Group(name=name, channels=tuple(channels)))
+        groups.append(
+            Group(
+                name=child_text(group_el, "name"),
+                channels=tuple(channels),
+                description=child_text(group_el, "description"),
+            )
+        )
     return groups
 
 
 def _read_channel(
     channel_el: ET.Element,
-    by_id: dict[str | None, ET.Element],
-    blocks: dict[str | None, ET.Element],
+    by_id: _ElementMap,
+    blocks: _ElementMap,
     data: bytes,
     prefix: str,
 ) -> Channel:
-    name = _child_text(channel_el, "name")
-    unit = _child_text(channel_el, "unit_string")
-    description = _child_text(channel_el, "description")
-    value_type, values = _read_values(channel_el, by_id, blocks, data, prefix)
+    column = by_id.get(one_ref(child_text(channel_el, "local_columns")))
+    if column is None:
+        sequence = Sequence("", "", ())
+    else:
+        sequence = read_sequence(channel_el, column, by_id, blocks, data, prefix)
     return Channel(
-        name=name,
-        unit=unit,
-        description=description,
-        value_type=value_type,
-        data=values,
+        name=child_text(channel_el, "name"),
+        unit=child_text(channel_el, "unit_string"),
+        description=child_text(channel_el, "description"),
+        value_type=sequence.value_type,
+        data=sequence.values,
+        representation=sequence.representation,
+        minimum=_optional_float(child_text(channel_el, "minimum")),
+        maximum=_optional_float(child_text(channel_el, "maximum")),
+        datatype=child_text(channel_el, "datatype"),
     )
 
 
-def _read_values(
-    channel_el: ET.Element,
-    by_id: dict[str | None, ET.Element],
-    blocks: dict[str | None, ET.Element],
-    data: bytes,
-    prefix: str,
-) -> tuple[str, tuple[float, ...]]:
-    column = by_id.get(_one_ref(_child_text(channel_el, "local_columns")))
-    if column is None:
-        return "", ()
-    representation = _child_text(column, "sequence_representation")
-    if representation and representation != "explicit":
-        raise UnsupportedTdmError(
-            f"unsupported sequence representation {representation!r}; "
-            "only 'explicit' channels are read"
-        )
-    sequence = by_id.get(_one_ref(_child_text(column, "values")))
-    if sequence is None:
-        return "", ()
-    values_el = sequence.find("{*}values")
-    block = blocks.get(values_el.get("external")) if values_el is not None else None
-    if block is None:
-        return "", ()
-    value_type = block.get("valueType", "")
-    byte_offset = int(block.get("byteOffset", "0"))
-    length = int(block.get("length", "0"))
-    return value_type, decode_block(data, prefix, value_type, byte_offset, length)
-
-
-def _child_text(element: ET.Element | None, name: str) -> str:
-    if element is None:
-        return ""
-    child = element.find(f"{{*}}{name}")
-    return (child.text or "").strip() if child is not None else ""
-
-
-def _refs(text: str) -> list[str]:
-    return _REF.findall(text)
-
-
-def _one_ref(text: str) -> str | None:
-    found = _REF.findall(text)
-    return found[0] if found else None
+def _optional_float(text: str) -> float | None:
+    if not text:
+        return None
+    try:
+        return float(text)
+    except ValueError:
+        return None
