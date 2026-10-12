@@ -1,0 +1,47 @@
+{
+  "SineData-be.tdm": {
+    "title": "NI SineData sample, as published in the TDMtermite repository",
+    "url": "https://raw.githubusercontent.com/RecordEvolution/TDMtermite/04d523d9beb887b343c09a39bb50356bf5a2194c/samples/SineData-be.tdm",
+    "revision": "commit 04d523d9beb887b343c09a39bb50356bf5a2194c",
+    "licence": "MIT (TDMtermite repository licence); sample data originally from National Instruments",
+    "fetched": "2026-10-13",
+    "size": 15412,
+    "sha256": "47d9b39e470375b48457e177cb5d5e4414ead2e23e71081cf4d2193ab0ee075d"
+  },
+  "SineData-be.tdx": {
+    "title": "NI SineData sample, as published in the TDMtermite repository",
+    "url": "https://raw.githubusercontent.com/RecordEvolution/TDMtermite/04d523d9beb887b343c09a39bb50356bf5a2194c/samples/SineData-be.tdx",
+    "revision": "commit 04d523d9beb887b343c09a39bb50356bf5a2194c",
+    "licence": "MIT (TDMtermite repository licence); sample data originally from National Instruments",
+    "fetched": "2026-10-13",
+    "size": 80000,
+    "sha256": "7a78f70c0d7da5c7770d3025c0ecfed3a00dc3ae7403c8eed35202839e570561"
+  },
+  "SineData.tdm": {
+    "title": "NI SineData sample, as published in the TDMtermite repository",
+    "url": "https://raw.githubusercontent.com/RecordEvolution/TDMtermite/04d523d9beb887b343c09a39bb50356bf5a2194c/samples/SineData.tdm",
+    "revision": "commit 04d523d9beb887b343c09a39bb50356bf5a2194c",
+    "licence": "MIT (TDMtermite repository licence); sample data originally from National Instruments",
+    "fetched": "2026-10-13",
+    "size": 15412,
+    "sha256": "9447e784513d3fc550a1bb4b56fe226170aae77b134c1928b16761a651e876aa"
+  },
+  "SineData.tdx": {
+    "title": "NI SineData sample, as published in the TDMtermite repository",
+    "url": "https://raw.githubusercontent.com/RecordEvolution/TDMtermite/04d523d9beb887b343c09a39bb50356bf5a2194c/samples/SineData.tdx",
+    "revision": "commit 04d523d9beb887b343c09a39bb50356bf5a2194c",
+    "licence": "MIT (TDMtermite repository licence); sample data originally from National Instruments",
+    "fetched": "2026-10-13",
+    "size": 80000,
+    "sha256": "600cd7a33c9835ce726aaf8fd26c3236ed73f8bf8a9de54854e331dfc74db653"
+  },
+  "SineData_implicit.tdm": {
+    "title": "NI SineData sample, as published in the TDMtermite repository",
+    "url": "https://raw.githubusercontent.com/RecordEvolution/TDMtermite/04d523d9beb887b343c09a39bb50356bf5a2194c/samples/SineData_implicit.tdm",
+    "revision": "commit 04d523d9beb887b343c09a39bb50356bf5a2194c",
+    "licence": "MIT (TDMtermite repository licence); sample data originally from National Instruments",
+    "fetched": "2026-10-13",
+    "size": 15971,
+    "sha256": "3e7521bfb2daac30fcdcb66e9491de79bf485ba4ab356348c4a0513fb0130299"
+  }
+}

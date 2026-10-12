@@ -1,10 +1,11 @@
-"""End-to-end contract tests against genuine NI sample files.
+"""End-to-end contract tests against genuine NI sample files, when they are present.
 
-The fixtures under ``tests/fixtures`` are the public ``SineData`` samples from the
-RecordEvolution/TDMtermite repository, committed verbatim. ``SineData`` is a known
-dataset: channel ``A = 1`` is ``sin(0.01 * index)`` sampled 1000 times, amplitude
-channels scale that sine, and the frequency channels raise the angular step. Those
-identities are the independent oracle this suite checks the decoded numbers against.
+The ``SineData`` samples are not part of the repository: ``scripts/fetch_upstream.py``
+downloads them from the TDMtermite repository into ``tests/upstream`` (URL, revision,
+size and sha256 in ``tests/upstream/MANIFEST.json``), and these tests skip until it has
+run. ``SineData`` is a known dataset: channel ``A = 1`` is ``sin(0.01 * index)`` sampled
+1000 times, amplitude channels scale that sine, and the frequency channels raise the
+angular step. Those identities are the independent oracle checked here.
 """
 
 from __future__ import annotations
@@ -12,9 +13,14 @@ from __future__ import annotations
 import math
 from pathlib import Path
 
+import pytest
+
 from tdmread import TdmFile, read_tdm
 
-FIXTURES = Path(__file__).parent / "fixtures"
+FIXTURES = Path(__file__).parent / "upstream"
+pytestmark = pytest.mark.skipif(
+    not (FIXTURES / "SineData.tdx").is_file(), reason="run scripts/fetch_upstream.py"
+)
 
 
 def _sine(step: float) -> list[float]:
