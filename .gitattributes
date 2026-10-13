@@ -1,4 +1,4 @@
 * text=auto eol=lf
 
-# Golden sample fixtures are committed byte-for-byte; never normalize them.
+# Fixtures are committed byte-for-byte; never normalize them.
 tests/fixtures/** binary

@@ -2,9 +2,9 @@
 
 This builds a throwaway virtual environment, performs an editable install of the
 project into it, and runs the genuine ``tdmread`` console entry point as a subprocess
-against the committed sample files. Nothing is mocked: it exercises the exact binary a
+against the committed synthetic files. Nothing is mocked: it exercises the exact binary a
 user gets from ``pip install tdmread`` and cross-checks the dumped numbers against the
-known ``SineData`` sine identity.
+sine identity the synthetic files were generated from.
 """
 
 from __future__ import annotations
@@ -19,8 +19,8 @@ from pathlib import Path
 import pytest
 
 REPO = Path(__file__).resolve().parent.parent
-FIXTURES = REPO / "tests" / "fixtures"
-SINE = str(FIXTURES / "SineData.tdm")
+FIXTURES = REPO / "tests" / "fixtures" / "synthetic"
+SINE = str(FIXTURES / "Synthetic.tdm")
 
 
 @pytest.fixture(scope="session")
@@ -48,7 +48,7 @@ def _run(script: Path, *args: str) -> subprocess.CompletedProcess[str]:
 def test_installed_script_reports_version(console_script: Path) -> None:
     result = _run(console_script, "--version")
     assert result.returncode == 0
-    assert result.stdout.strip() == "tdmread 0.2.0"
+    assert result.stdout.strip() == "tdmread 0.2.1"
 
 
 def test_installed_script_lists_channels(console_script: Path) -> None:
@@ -63,11 +63,11 @@ def test_installed_script_dump_matches_sine_oracle(console_script: Path) -> None
     result = _run(console_script, "dump", SINE, "-g", "Amplitudes", "-c", "A = 1", "-f", "json")
     assert result.returncode == 0, result.stderr
     payload = json.loads(result.stdout)
-    assert payload["length"] == 1000
+    assert payload["length"] == 100
     data = payload["data"]
-    # Independent oracle: SineData A = 1 is sin(0.01 * index).
-    for index in (0, 1, 250, 500, 999):
-        assert abs(data[index] - math.sin(0.01 * index)) < 1e-9
+    # Independent oracle: the synthetic A = 1 is sin(0.05 * index).
+    for index in (0, 1, 25, 50, 99):
+        assert abs(data[index] - math.sin(0.05 * index)) < 1e-9
 
 
 def test_installed_script_errors_to_stderr(console_script: Path) -> None:

@@ -7,8 +7,8 @@ import pytest
 
 from tdmread._cli import main
 
-FIXTURES = Path(__file__).parent / "fixtures"
-SINE = str(FIXTURES / "SineData.tdm")
+FIXTURES = Path(__file__).parent / "fixtures" / "synthetic"
+SINE = str(FIXTURES / "Synthetic.tdm")
 
 
 def test_version_prints_and_exits_zero(capsys: pytest.CaptureFixture[str]) -> None:
@@ -26,7 +26,7 @@ def test_no_command_prints_help(capsys: pytest.CaptureFixture[str]) -> None:
 def test_info_reports_metadata_and_groups(capsys: pytest.CaptureFixture[str]) -> None:
     assert main(["info", SINE]) == 0
     out = capsys.readouterr().out
-    assert "author: National Instruments" in out
+    assert "author: tdmread test suite" in out
     assert "Amplitudes (5 channels)" in out
 
 
@@ -42,7 +42,7 @@ def test_dump_csv_to_stdout(capsys: pytest.CaptureFixture[str]) -> None:
     lines = capsys.readouterr().out.strip().splitlines()
     assert lines[0] == "index,A = 1"
     assert lines[1] == "0,0.0"
-    assert len(lines) == 1001
+    assert len(lines) == 101
 
 
 def test_dump_json_to_file(tmp_path: Path) -> None:
@@ -52,7 +52,7 @@ def test_dump_json_to_file(tmp_path: Path) -> None:
     payload = json.loads(out.read_text(encoding="utf-8"))
     assert payload["name"] == "A = 1"
     assert payload["value_type"] == "eFloat64Usi"
-    assert len(payload["data"]) == 1000
+    assert len(payload["data"]) == 100
 
 
 def test_missing_file_errors_to_stderr(capsys: pytest.CaptureFixture[str]) -> None:

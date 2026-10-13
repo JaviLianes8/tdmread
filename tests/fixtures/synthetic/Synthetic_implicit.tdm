@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Hand-made tdmread test fixture, written by scripts/make_synthetic_tdm.py. -->
+<usi:tdm xmlns:usi="http://www.ni.com/Schemas/USI/1_0" version="1.0">
+  <usi:include>
+    <file url="Synthetic.tdx" byteOrder="littleEndian">
+      <block id="inc0" valueType="eFloat64Usi" byteOffset="0" length="100"/>
+      <block id="inc1" valueType="eFloat64Usi" byteOffset="800" length="100"/>
+      <block id="inc2" valueType="eFloat64Usi" byteOffset="1600" length="100"/>
+      <block id="inc3" valueType="eFloat64Usi" byteOffset="2400" length="100"/>
+      <block id="inc4" valueType="eFloat64Usi" byteOffset="3200" length="100"/>
+      <block id="inc5" valueType="eFloat64Usi" byteOffset="4000" length="100"/>
+      <block id="inc6" valueType="eFloat64Usi" byteOffset="4800" length="100"/>
+      <block id="inc7" valueType="eFloat64Usi" byteOffset="5600" length="100"/>
+      <block id="inc8" valueType="eFloat64Usi" byteOffset="6400" length="100"/>
+      <block id="inc9" valueType="eFloat64Usi" byteOffset="7200" length="100"/>
+    </file>
+  </usi:include>
+  <usi:data>
+    <tdm_root id="root">
+      <name>Synthetic_implicit.TDM</name>
+      <description>Generated sine signals for the tdmread tests.</description>
+      <author>tdmread test suite</author>
+      <channelgroups>#xpointer(id("grp0") id("grp1"))</channelgroups>
+    </tdm_root>
+    <tdm_channelgroup id="grp0">
+      <name>Amplitudes</name>
+      <root>#xpointer(id("root"))</root>
+      <channels>#xpointer(id("ch0") id("ch1") id("ch2") id("ch3") id("ch4"))</channels>
+    </tdm_channelgroup>
+    <tdm_channelgroup id="grp1">
+      <name>Frequencies</name>
+      <root>#xpointer(id("root"))</root>
+      <channels>#xpointer(id("ch5") id("ch6") id("ch7") id("ch8") id("ch9"))</channels>
+    </tdm_channelgroup>
+    <tdm_channel id="ch0">
+      <name>A = 1</name>
+      <group>#xpointer(id("grp0"))</group>
+      <datatype>DT_DOUBLE</datatype>
+      <minimum>-0.9999232575641008</minimum>
+      <maximum>0.999783764189357</maximum>
+      <instance_attributes>
+        <long_attribute name="NI_ChannelLength">100</long_attribute>
+      </instance_attributes>
+      <local_columns>#xpointer(id("lc0"))</local_columns>
+    </tdm_channel>
+    <submatrix id="sm0">
+      <number_of_rows>100</number_of_rows>
+      <local_columns>#xpointer(id("lc0"))</local_columns>
+    </submatrix>
+    <localcolumn id="lc0">
+      <measurement_quantity>#xpointer(id("ch0"))</measurement_quantity>
+      <submatrix>#xpointer(id("sm0"))</submatrix>
+      <sequence_representation>implicit_linear</sequence_representation>
+      <generation_parameters>0.25 0.5</generation_parameters>
+    </localcolumn>
+    <tdm_channel id="ch1">
+      <name>A = 2</name>
+      <group>#xpointer(id("grp0"))</group>
+      <datatype>DT_DOUBLE</datatype>
+      <minimum>-1.9998465151282017</minimum>
+      <maximum>1.999567528378714</maximum>
+      <instance_attributes>
+      </instance_attributes>
+      <local_columns>#xpointer(id("lc1"))</local_columns>
+    </tdm_channel>
+    <submatrix id="sm1">
+      <number_of_rows>100</number_of_rows>
+      <local_columns>#xpointer(id("lc1"))</local_columns>
+    </submatrix>
+    <localcolumn id="lc1">
+      <measurement_quantity>#xpointer(id("ch1"))</measurement_quantity>
+      <submatrix>#xpointer(id("sm1"))</submatrix>
+      <sequence_representation>implicit_linear</sequence_representation>
+      <generation_parameters>0.25 0.5</generation_parameters>
+    </localcolumn>
+    <tdm_channel id="ch2">
+      <name>A = 4</name>
+      <group>#xpointer(id("grp0"))</group>
+      <datatype>DT_DOUBLE</datatype>
+      <minimum>-3.9996930302564033</minimum>
+      <maximum>3.999135056757428</maximum>
+      <instance_attributes>
+        <long_attribute name="NI_ChannelLength">100</long_attribute>
+      </instance_attributes>
+      <local_columns>#xpointer(id("lc2"))</local_columns>
+    </tdm_channel>
+    <submatrix id="sm2">
+      <number_of_rows>100</number_of_rows>
+      <local_columns>#xpointer(id("lc2"))</local_columns>
+    </submatrix>
+    <localcolumn id="lc2">
+      <measurement_quantity>#xpointer(id("ch2"))</measurement_quantity>
+      <submatrix>#xpointer(id("sm2"))</submatrix>
+      <sequence_representation>implicit_linear</sequence_representation>
+      <generation_parameters>0.25 0.5</generation_parameters>
+    </localcolumn>
+    <tdm_channel id="ch3">
+      <name>A = 8</name>
+      <group>#xpointer(id("grp0"))</group>
+      <datatype>DT_DOUBLE</datatype>
+      <minimum>-7.999386060512807</minimum>
+      <maximum>7.998270113514856</maximum>
+      <instance_attributes>
+      </instance_attributes>
+      <local_columns>#xpointer(id("lc3"))</local_columns>
+    </tdm_channel>
+    <submatrix id="sm3">
+      <number_of_rows>100</number_of_rows>
+      <local_columns>#xpointer(id("lc3"))</local_columns>
+    </submatrix>
+    <localcolumn id="lc3">
+      <measurement_quantity>#xpointer(id("ch3"))</measurement_quantity>
+      <submatrix>#xpointer(id("sm3"))</submatrix>
+      <sequence_representation>implicit_linear</sequence_representation>
+      <generation_parameters>0.25 0.5</generation_parameters>
+    </localcolumn>
+    <tdm_channel id="ch4">
+      <name>A = 16</name>
+      <group>#xpointer(id("grp0"))</group>
+      <datatype>DT_DOUBLE</datatype>
+      <minimum>-15.998772121025613</minimum>
+      <maximum>15.996540227029712</maximum>
+      <instance_attributes>
+        <long_attribute name="NI_ChannelLength">100</long_attribute>
+      </instance_attributes>
+      <local_columns>#xpointer(id("lc4"))</local_columns>
+    </tdm_channel>
+    <submatrix id="sm4">
+      <number_of_rows>100</number_of_rows>
+      <local_columns>#xpointer(id("lc4"))</local_columns>
+    </submatrix>
+    <localcolumn id="lc4">
+      <measurement_quantity>#xpointer(id("ch4"))</measurement_quantity>
+      <submatrix>#xpointer(id("sm4"))</submatrix>
+      <sequence_representation>implicit_linear</sequence_representation>
+      <generation_parameters>0.25 0.5</generation_parameters>
+    </localcolumn>
+    <tdm_channel id="ch5">
+      <name>F = 1</name>
+      <group>#xpointer(id("grp1"))</group>
+      <datatype>DT_DOUBLE</datatype>
+      <minimum>-0.9999232575641008</minimum>
+      <maximum>0.999783764189357</maximum>
+      <instance_attributes>
+        <long_attribute name="NI_ChannelLength">100</long_attribute>
+      </instance_attributes>
+      <local_columns>#xpointer(id("lc5"))</local_columns>
+    </tdm_channel>
+    <submatrix id="sm5">
+      <number_of_rows>100</number_of_rows>
+      <local_columns>#xpointer(id("lc5"))</local_columns>
+    </submatrix>
+    <localcolumn id="lc5">
+      <measurement_quantity>#xpointer(id("ch5"))</measurement_quantity>
+      <submatrix>#xpointer(id("sm5"))</submatrix>
+      <sequence_representation>explicit</sequence_representation>
+      <values>#xpointer(id("seq5"))</values>
+    </localcolumn>
+    <double_sequence id="seq5"><values external="inc5"/></double_sequence>
+    <tdm_channel id="ch6">
+      <name>F = 2</name>
+      <group>#xpointer(id("grp1"))</group>
+      <datatype>DT_DOUBLE</datatype>
+      <minimum>-0.9999232575641008</minimum>
+      <maximum>0.9995736030415051</maximum>
+      <instance_attributes>
+        <long_attribute name="NI_ChannelLength">100</long_attribute>
+      </instance_attributes>
+      <local_columns>#xpointer(id("lc6"))</local_columns>
+    </tdm_channel>
+    <submatrix id="sm6">
+      <number_of_rows>100</number_of_rows>
+      <local_columns>#xpointer(id("lc6"))</local_columns>
+    </submatrix>
+    <localcolumn id="lc6">
+      <measurement_quantity>#xpointer(id("ch6"))</measurement_quantity>
+      <submatrix>#xpointer(id("sm6"))</submatrix>
+      <sequence_representation>explicit</sequence_representation>
+      <values>#xpointer(id("seq6"))</values>
+    </localcolumn>
+    <double_sequence id="seq6"><values external="inc6"/></double_sequence>
+    <tdm_channel id="ch7">
+      <name>F = 4</name>
+      <group>#xpointer(id("grp1"))</group>
+      <datatype>DT_DOUBLE</datatype>
+      <minimum>-0.9999902065507035</minimum>
+      <maximum>0.9995736030415051</maximum>
+      <instance_attributes>
+        <long_attribute name="NI_ChannelLength">100</long_attribute>
+      </instance_attributes>
+      <local_columns>#xpointer(id("lc7"))</local_columns>
+    </tdm_channel>
+    <submatrix id="sm7">
+      <number_of_rows>100</number_of_rows>
+      <local_columns>#xpointer(id("lc7"))</local_columns>
+    </submatrix>
+    <localcolumn id="lc7">
+      <measurement_quantity>#xpointer(id("ch7"))</measurement_quantity>
+      <submatrix>#xpointer(id("sm7"))</submatrix>
+      <sequence_representation>explicit</sequence_representation>
+      <values>#xpointer(id("seq7"))</values>
+    </localcolumn>
+    <double_sequence id="seq7"><values external="inc7"/></double_sequence>
+    <tdm_channel id="ch8">
+      <name>F = 8</name>
+      <group>#xpointer(id("grp1"))</group>
+      <datatype>DT_DOUBLE</datatype>
+      <minimum>-0.9992759921366277</minimum>
+      <maximum>0.9997929001426693</maximum>
+      <instance_attributes>
+        <long_attribute name="NI_ChannelLength">100</long_attribute>
+      </instance_attributes>
+      <local_columns>#xpointer(id("lc8"))</local_columns>
+    </tdm_channel>
+    <submatrix id="sm8">
+      <number_of_rows>100</number_of_rows>
+      <local_columns>#xpointer(id("lc8"))</local_columns>
+    </submatrix>
+    <localcolumn id="lc8">
+      <measurement_quantity>#xpointer(id("ch8"))</measurement_quantity>
+      <submatrix>#xpointer(id("sm8"))</submatrix>
+      <sequence_representation>explicit</sequence_representation>
+      <values>#xpointer(id("seq8"))</values>
+    </localcolumn>
+    <double_sequence id="seq8"><values external="inc8"/></double_sequence>
+    <tdm_channel id="ch9">
+      <name>F = 16</name>
+      <group>#xpointer(id("grp1"))</group>
+      <datatype>DT_DOUBLE</datatype>
+      <minimum>-0.9999338662588038</minimum>
+      <maximum>0.9995736030415051</maximum>
+      <instance_attributes>
+        <long_attribute name="NI_ChannelLength">100</long_attribute>
+      </instance_attributes>
+      <local_columns>#xpointer(id("lc9"))</local_columns>
+    </tdm_channel>
+    <submatrix id="sm9">
+      <number_of_rows>100</number_of_rows>
+      <local_columns>#xpointer(id("lc9"))</local_columns>
+    </submatrix>
+    <localcolumn id="lc9">
+      <measurement_quantity>#xpointer(id("ch9"))</measurement_quantity>
+      <submatrix>#xpointer(id("sm9"))</submatrix>
+      <sequence_representation>explicit</sequence_representation>
+      <values>#xpointer(id("seq9"))</values>
+    </localcolumn>
+    <double_sequence id="seq9"><values external="inc9"/></double_sequence>
+  </usi:data>
+</usi:tdm>

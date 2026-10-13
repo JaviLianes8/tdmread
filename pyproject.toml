@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "tdmread"
-version = "0.2.0"
+version = "0.2.1"
 description = "Zero-dependency, typed reader for NI TDM/TDX files (XML .tdm header plus binary .tdx), using only the Python standard library"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -37,6 +37,21 @@ Funding = "https://buymeacoffee.com/jlianesglrs"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/tdmread"]
+
+[tool.hatch.build.targets.sdist]
+only-include = [
+    "src/tdmread",
+    "tests",
+    "scripts/fetch_upstream.py",
+    "scripts/make_synthetic_tdm.py",
+    "README.md",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "LICENSE",
+    "pyproject.toml",
+]
+# Third-party samples are fetched locally for the tests and never shipped; only their manifest is.
+exclude = ["**/__pycache__", "**/*.pyc", "tests/upstream/*.tdm", "tests/upstream/*.tdx"]
 
 [tool.ruff]
 line-length = 100
