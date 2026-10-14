@@ -64,6 +64,7 @@ exclude = [
     "**/__pycache__",
     "**/*.pyc",
     "**/*.log",
+    ".gitignore",
     "tests/upstream/*.tdm",
     "tests/upstream/*.tdx",
 ]
