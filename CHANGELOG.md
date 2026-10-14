@@ -6,6 +6,42 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-10-14
+
+The public API is now stable: `read_tdm`, `TdmFile`, `Group`, `Channel`, `FileMetadata`,
+`supported_value_types`, `TdmError`, `TdmFileNotFoundError` and `UnsupportedTdmError`, and
+the `tdmread` command. Every reading rule was checked against files LabVIEW 2026 wrote and
+against NI's own reader; GUIDE.md lists the rules and the few deliberate differences.
+
+### Added
+
+- String channels and time channels (`eTimeUsi` in the .tdx, ISO text in the header) are
+  read; times are naive local `datetime` values cut to microseconds.
+- Values written inline in the header (numbers, strings, times).
+- `implicit_constant`, `raw_linear` and `raw_linear_external` channels, interleaved
+  `block_bm` layouts and the signed byte type `eSInt8Usi`.
+- `properties` on `TdmFile`, `Group` and `Channel`: the typed custom properties
+  (`wf_increment`, `wf_start_time`, ...), as a read-only, hashable, picklable mapping.
+- `Channel.numbers()`, `Channel.strings()` and `Channel.times()`: `data` typed as one kind.
+- GUIDE.md, and tests against LabVIEW 2026 output and NI's recorded reading of it.
+
+### Changed
+
+- `eInt8Usi` is an unsigned byte, as NI writes and reads it (0.2.1 read it as signed).
+- `Channel.data` is typed `tuple[float, ...] | tuple[str, ...] | tuple[datetime, ...]`.
+- `implicit_linear` follows NI's reader: the length comes from the row count first, a
+  single parameter gives a constant, and missing parameters come from the stored values
+  (0.2.1 produced `0, 1, 2, ...`); `implicit` is no longer accepted.
+- A reference to a missing value sequence or block, a header whose root is not `<tdm>`,
+  a DTD, an unknown encoding and malformed XML raise `TdmError`.
+- The .tdx must sit in the header's folder or below it unless `tdx_path` is given, and is
+  read in ranges, on demand, instead of whole.
+- Generated channels are capped at ten million values plus one per .tdx byte per file.
+- Error messages quote at most 40 characters of file text; the command cuts them at 300.
+- `tdmread dump -f json` writes valid JSON (non-finite floats as strings, times as ISO
+  text) and adds `datatype`; CSV writes times as ISO text. Usage errors exit with 2, an
+  interrupt with 130, and a closed output pipe ends the command quietly.
+
 ## [0.2.1]
 
 ### Changed

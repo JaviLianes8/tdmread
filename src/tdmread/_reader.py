@@ -32,6 +32,7 @@ def read_tdm(tdm_path: StrPath, tdx_path: StrPath | None = None) -> TdmFile:
     :class:`TdmError` for any other malformed dataset.
 
     >>> import pathlib, tempfile
+    >>> from tdmread import read_tdm
     >>> header = pathlib.Path(tempfile.mkdtemp()) / "demo.tdm"
     >>> _ = header.write_text(
     ...     '<usi:tdm xmlns:usi="http://www.ni.com/Schemas/USI/1_0"><usi:data>'

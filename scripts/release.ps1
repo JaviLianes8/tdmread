@@ -1,15 +1,17 @@
 # Build and upload to PyPI. Run scripts/check.ps1 first.
-# The name must not already exist on PyPI; the token is read from a secret store, never git.
+# The version must not already exist on PyPI; the token is read from a secret store, never git.
 $ErrorActionPreference = "Stop"
 
-# Works on both Windows PowerShell 5.1 and pwsh 7 (generic catch, no PS7-only types).
-$taken = $true
+# Refuse to upload a version PyPI already has. Works on Windows PowerShell 5.1 and pwsh 7.
+$version = (Select-String -Path pyproject.toml -Pattern '^version = "(.+)"').Matches[0].Groups[1].Value
+$released = $false
 try {
-    Invoke-WebRequest -UseBasicParsing "https://pypi.org/pypi/tdmread/json" | Out-Null
+    Invoke-WebRequest -UseBasicParsing "https://pypi.org/pypi/tdmread/$version/json" | Out-Null
+    $released = $true
 } catch {
-    if ($_.Exception.Response.StatusCode.value__ -eq 404) { $taken = $false } else { throw }
+    if ($_.Exception.Response.StatusCode.value__ -ne 404) { throw }
 }
-if ($taken) { throw "The name 'tdmread' already exists on PyPI. Choose another before publishing." }
+if ($released) { throw "tdmread $version is already on PyPI. Bump the version first." }
 
 $token = $env:PYPI_TOKEN
 if (-not $token -and (Test-Path "C:\secrets\pypi-token.txt")) {
@@ -21,7 +23,9 @@ if (-not $token) {
 
 Remove-Item -Recurse -Force dist -ErrorAction SilentlyContinue
 python -m build
-python -m twine check dist/*
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+python -m twine check --strict dist/*
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 $env:TWINE_USERNAME = "__token__"
 $env:TWINE_PASSWORD = $token
