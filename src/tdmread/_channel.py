@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, cast
 
-from ._errors import TdmError
+from ._errors import TdmError, quote
 from ._props import Properties, PropertyValue
 
 Values = tuple[float, ...] | tuple[str, ...] | tuple[datetime, ...]
@@ -53,6 +53,44 @@ class Channel:
         3
         """
         return len(self.data)
+
+    def numbers(self) -> tuple[float, ...]:
+        """Return `data` typed as numbers, or raise :class:`TdmError` for text or times.
+
+        Use it (or :meth:`strings`, :meth:`times`) when a type checker needs to know the
+        kind of value; an empty channel gives ``()`` for all three.
+
+        >>> from tdmread import Channel
+        >>> sum(Channel("n", "", "", "eInt32Usi", (1, 2, 3)).numbers())
+        6
+        """
+        return cast("tuple[float, ...]", self._only((int, float), "numbers"))
+
+    def strings(self) -> tuple[str, ...]:
+        """Return `data` typed as strings, or raise :class:`TdmError` for other values.
+
+        >>> from tdmread import Channel
+        >>> Channel("s", "", "", "", ("a", "b")).strings()
+        ('a', 'b')
+        """
+        return cast("tuple[str, ...]", self._only((str,), "strings"))
+
+    def times(self) -> tuple[datetime, ...]:
+        """Return `data` typed as ``datetime`` values, or raise :class:`TdmError`.
+
+        >>> from datetime import datetime
+        >>> from tdmread import Channel
+        >>> Channel("t", "", "", "eTimeUsi", (datetime(2026, 1, 2),)).times()[0].year
+        2026
+        """
+        return cast("tuple[datetime, ...]", self._only((datetime,), "times"))
+
+    def _only(self, kinds: tuple[type, ...], label: str) -> Values:
+        for value in self.data:
+            if isinstance(value, bool) or not isinstance(value, kinds):
+                kind = type(value).__name__
+                raise TdmError(f"channel {quote(self.name)} holds {kind} values, not {label}")
+        return self.data
 
     def to_list(self) -> list[float] | list[str] | list[datetime]:
         """Return the values as a new list.
