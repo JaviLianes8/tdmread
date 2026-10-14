@@ -1,119 +1,111 @@
-"""Turn a localcolumn into decoded values, explicit or implicit-linear."""
+"""Turn a localcolumn into decoded values for each sequence representation.
+
+The rules follow NI's own reader, checked on files it wrote and on probes it read:
+``implicit_linear`` is ``start + index * increment`` (a lone start gives a constant),
+``implicit_constant`` repeats its value, ``raw_linear`` and ``raw_linear_external``
+scale stored values as ``offset + factor * raw``, and generated channels take their
+length from the submatrix row count.
+"""
 
 from __future__ import annotations
 
 import xml.etree.ElementTree as ET
-from typing import NamedTuple
+from typing import NamedTuple, cast
 
-from ._binary import decode_block
-from ._errors import TdmError, UnsupportedTdmError
-from ._xml import child_text, long_attribute, one_ref
+from ._channel import Values
+from ._errors import TdmError, UnsupportedTdmError, quote
+from ._explicit import read_values
+from ._numbers import parse_float
+from ._tdx import TdxSource
+from ._xml import ElementMap, child, child_text, parse_int, resolve
 
-_ElementMap = dict[str | None, ET.Element]
-
-# Representations that generate a linear axis instead of storing samples.
-_IMPLICIT = frozenset({"implicit_linear", "implicit"})
+_RAW = frozenset({"raw_linear", "raw_linear_external"})
+_GENERATED = frozenset({"implicit_linear", "implicit_constant"})
+# Generated channels need no stored data, so their size is capped: at most this many
+# values plus one per byte of the .tdx, so a tiny header cannot demand gigabytes.
+GENERATED_ALLOWANCE = 10_000_000
 
 
 class Sequence(NamedTuple):
-    """Decoded samples plus the TDM value type and representation they came from."""
+    """Decoded samples plus the TDX value type and representation they came from."""
 
     value_type: str
     representation: str
-    values: tuple[float, ...]
+    values: Values
 
 
-def read_sequence(
-    channel_el: ET.Element,
-    column: ET.Element,
-    by_id: _ElementMap,
-    blocks: _ElementMap,
-    data: bytes,
-    prefix: str,
-) -> Sequence:
-    """Decode the values a localcolumn describes.
+class Context(NamedTuple):
+    """What every column of one dataset is read against."""
 
-    `explicit` columns are read from the .tdx block they point at. `implicit_linear`
-    columns are generated as `offset + index * increment` from their generation
-    parameters, with the length taken from the owning channel. Any other
-    representation raises :class:`UnsupportedTdmError`.
-    """
+    by_id: ElementMap
+    blocks: ElementMap
+    tdx: TdxSource
+    prefix: str
+    budget: list[int]
+
+
+def read_sequence(channel: ET.Element, column: ET.Element, ctx: Context) -> Sequence:
+    """Decode the values that `column`, a localcolumn of `channel`, describes."""
     representation = child_text(column, "sequence_representation") or "explicit"
     if representation == "explicit":
-        return _read_explicit(column, by_id, blocks, data, prefix)
-    if representation in _IMPLICIT:
-        return _read_implicit(channel_el, column, by_id)
-    raise UnsupportedTdmError(
-        f"unsupported sequence representation {representation!r}; "
-        "only 'explicit' and 'implicit_linear' channels are read"
-    )
+        value_type, values = read_values(column, ctx.by_id, ctx.blocks, ctx.tdx, ctx.prefix)
+        return Sequence(value_type, representation, values)
+    if representation in _RAW:
+        value_type, raw = read_values(column, ctx.by_id, ctx.blocks, ctx.tdx, ctx.prefix)
+        offset, factor = _parameters(column, 2, representation)
+        scaled = tuple(offset + factor * value for value in _numbers(raw, representation))
+        return Sequence(value_type, representation, scaled)
+    if representation in _GENERATED:
+        return Sequence("", representation, _generate(channel, column, representation, ctx))
+    raise UnsupportedTdmError(f"unsupported sequence representation {quote(representation)}")
 
 
-def _read_explicit(
-    column: ET.Element,
-    by_id: _ElementMap,
-    blocks: _ElementMap,
-    data: bytes,
-    prefix: str,
-) -> Sequence:
-    sequence = by_id.get(one_ref(child_text(column, "values")))
-    if sequence is None:
-        return Sequence("", "explicit", ())
-    values_el = sequence.find("{*}values")
-    block = blocks.get(values_el.get("external")) if values_el is not None else None
-    if block is None:
-        return Sequence("", "explicit", ())
-    value_type = block.get("valueType", "")
-    byte_offset = int(block.get("byteOffset", "0"))
-    length = int(block.get("length", "0"))
-    values = decode_block(data, prefix, value_type, byte_offset, length)
-    return Sequence(value_type, "explicit", values)
+def _generate(
+    channel: ET.Element, column: ET.Element, representation: str, ctx: Context
+) -> tuple[float, ...]:
+    count = _length(channel, column, ctx.by_id)
+    if count > ctx.budget[0]:
+        raise TdmError(
+            f"generated channels would need {count} values; the limit for this file "
+            f"is {ctx.budget[0]} more"
+        )
+    ctx.budget[0] -= count
+    params = _parameters(column, 1, representation)
+    start = params[0]
+    step = params[1] if representation == "implicit_linear" and len(params) > 1 else 0.0
+    if step == 0.0:
+        return (start,) * count
+    return tuple(start + index * step for index in range(count))
 
 
-def _read_implicit(
-    channel_el: ET.Element,
-    column: ET.Element,
-    by_id: _ElementMap,
-) -> Sequence:
-    offset, increment = _generation_parameters(child_text(column, "generation_parameters"))
-    count = long_attribute(channel_el, "NI_ChannelLength")
-    if count is None:
-        count = _count_from_submatrix(column, by_id)
-    if count is None:
-        raise TdmError("implicit channel has no known length (no NI_ChannelLength or submatrix)")
-    if count < 0:
-        raise TdmError(f"implicit channel reports a negative length: {count}")
-    values = tuple(offset + index * increment for index in range(count))
-    return Sequence("", "implicit_linear", values)
+def _numbers(values: Values, representation: str) -> tuple[float, ...]:
+    if not all(isinstance(value, (int, float)) for value in values):
+        raise TdmError(f"a {representation} channel must store numbers")
+    return cast("tuple[float, ...]", values)
 
 
-def _generation_parameters(text: str) -> tuple[float, float]:
-    """Return `(offset, increment)` from a generation_parameters string.
-
-    A missing or partial value defaults the offset to 0.0 and the increment to 1.0,
-    which yields the natural sample-index axis.
-    """
-    parts = text.split()
-    offset = _as_float(parts[0]) if parts else 0.0
-    increment = _as_float(parts[1]) if len(parts) > 1 else 1.0
-    return offset, increment
+def _parameters(column: ET.Element, needed: int, representation: str) -> tuple[float, ...]:
+    tokens = child_text(column, "generation_parameters").split()
+    if len(tokens) < needed:
+        raise TdmError(f"a {representation} channel needs {needed} generation parameter(s)")
+    return tuple(parse_float(token) for token in tokens[:2])
 
 
-def _as_float(token: str) -> float:
-    try:
-        return float(token)
-    except ValueError as exc:
-        raise TdmError(f"invalid generation parameter {token!r}") from exc
-
-
-def _count_from_submatrix(column: ET.Element, by_id: _ElementMap) -> int | None:
-    submatrix = by_id.get(one_ref(child_text(column, "submatrix")))
-    if submatrix is None:
-        return None
-    rows = child_text(submatrix, "number_of_rows")
+def _length(channel: ET.Element, column: ET.Element, by_id: ElementMap) -> int:
+    rows = child_text(resolve(by_id, column, "submatrix"), "number_of_rows")
     if not rows:
-        return None
-    try:
-        return int(rows)
-    except ValueError:
-        return None
+        rows = _channel_length(channel)
+    if not rows:
+        raise TdmError("a generated channel has no row count (submatrix number_of_rows)")
+    count = parse_int(rows, "row count")
+    if count < 0:
+        raise TdmError(f"a generated channel has a negative row count: {count}")
+    return count
+
+
+def _channel_length(channel: ET.Element) -> str:
+    attributes = child(channel, "instance_attributes")
+    for attr in attributes if attributes is not None else ():
+        if attr.get("name") == "NI_ChannelLength":
+            return (attr.text or "").strip()
+    return ""

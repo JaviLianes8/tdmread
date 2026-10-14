@@ -1,104 +1,125 @@
-"""Parse a .tdm XML header and read its channel data from the .tdx binary."""
+"""Parse a .tdm XML header and read its channel values."""
 
 from __future__ import annotations
 
+import os
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from ._binary import byte_order_prefix
+from ._channel import Channel
 from ._errors import TdmError, TdmFileNotFoundError
-from ._model import Channel, Group, TdmFile
-from ._sequence import Sequence, read_sequence
-from ._xml import child_text, one_ref, read_metadata, refs
+from ._model import FileMetadata, Group, TdmFile
+from ._numbers import is_float
+from ._props import read_properties
+from ._sequence import GENERATED_ALLOWANCE, Context, Sequence, read_sequence
+from ._tdx import StrPath, TdxSource, locate
+from ._xml import ElementMap, child_text, local_name, refs, resolve
 
-StrPath = str | Path
-
-_ElementMap = dict[str | None, ET.Element]
+_BLOCKS = frozenset({"block", "block_bm", "block_mr"})
 
 
 def read_tdm(tdm_path: StrPath, tdx_path: StrPath | None = None) -> TdmFile:
-    """Read a TDM dataset from `tdm_path`, locating the .tdx by the header reference.
+    """Read the TDM dataset whose XML header is `tdm_path`.
 
-    Pass `tdx_path` to override the data file the header points to. Explicit channels
-    are decoded from the .tdx; implicit-linear channels are generated and need no .tdx,
-    so the data file is only read when at least one explicit block refers to it.
+    The .tdx data file is the one the header names, in the header's folder; pass
+    `tdx_path` to read another one. The .tdx is opened only if a channel stores values
+    in it, so a header whose values are all inline or generated needs none.
 
-    Raises :class:`TdmFileNotFoundError` when a required file is missing and
-    :class:`UnsupportedTdmError` for features outside the supported subset.
+    Raises :class:`TdmFileNotFoundError` when the header or a needed .tdx is missing,
+    :class:`UnsupportedTdmError` for a layout outside the supported subset, and
+    :class:`TdmError` for any other malformed dataset.
+
+    >>> import pathlib, tempfile
+    >>> header = pathlib.Path(tempfile.mkdtemp()) / "demo.tdm"
+    >>> _ = header.write_text(
+    ...     '<usi:tdm xmlns:usi="http://www.ni.com/Schemas/USI/1_0"><usi:data>'
+    ...     '<tdm_root id="r"><name>demo</name><channelgroups>#xpointer(id("g"))'
+    ...     '</channelgroups></tdm_root><tdm_channelgroup id="g"><name>G</name>'
+    ...     '<channels>#xpointer(id("c"))</channels></tdm_channelgroup>'
+    ...     '<tdm_channel id="c"><name>U</name><unit_string>V</unit_string>'
+    ...     '<local_columns>#xpointer(id("l"))</local_columns></tdm_channel>'
+    ...     '<localcolumn id="l"><values>#xpointer(id("s"))</values></localcolumn>'
+    ...     '<double_sequence id="s"><values>0.5 1.5</values></double_sequence>'
+    ...     "</usi:data></usi:tdm>"
+    ... )
+    >>> dataset = read_tdm(header)
+    >>> dataset.metadata.name, dataset.group("G").channel("U").data
+    ('demo', (0.5, 1.5))
     """
     header = Path(tdm_path)
     if not header.is_file():
         raise TdmFileNotFoundError(f"TDM header not found: {header}")
-
-    root = ET.parse(header).getroot()
-    # A purely implicit dataset generates every axis and has no binary file descriptor.
-    file_el = root.find(".//{*}file")
-    byte_order = file_el.get("byteOrder", "littleEndian") if file_el is not None else "littleEndian"
-    prefix = byte_order_prefix(byte_order)
-
-    blocks: _ElementMap = {b.get("id"): b for b in root.findall(".//{*}file/{*}block")}
-    by_id: _ElementMap = {el.get("id"): el for el in root.iter() if el.get("id")}
-    data = _read_tdx(header, file_el, tdx_path) if (blocks and file_el is not None) else b""
-
-    groups = tuple(_read_groups(root, by_id, blocks, data, prefix))
-    return TdmFile(groups=groups, metadata=read_metadata(root))
-
-
-def _read_tdx(header: Path, file_el: ET.Element, override: StrPath | None) -> bytes:
-    if override is not None:
-        tdx = Path(override)
-    else:
-        url = file_el.get("url")
-        if not url:
-            raise TdmError("the .tdm header does not reference a .tdx file")
-        tdx = header.parent / url
     try:
-        return tdx.read_bytes()
-    except FileNotFoundError as exc:
-        raise TdmFileNotFoundError(f"TDX data not found: {tdx}") from exc
+        root = ET.parse(header).getroot()
+    except ET.ParseError as exc:
+        raise TdmError(f"the .tdm header is not well-formed XML ({exc})") from None
+
+    if local_name(root) != "tdm":
+        raise TdmError("the file is XML but not a TDM header (its root is not <tdm>)")
+    by_id: ElementMap = {}
+    blocks: ElementMap = {}
+    file_el: ET.Element | None = None
+    tdm_root: ET.Element | None = None
+    for element in root.iter():
+        ident = element.get("id")
+        name = local_name(element)
+        if name == "file" and file_el is None:
+            file_el = element
+        if name == "tdm_root" and tdm_root is None:
+            tdm_root = element
+        if ident is None:
+            continue
+        if name in _BLOCKS:
+            blocks.setdefault(ident, element)
+        else:
+            by_id.setdefault(ident, element)
+
+    order = file_el.get("byteOrder", "littleEndian") if file_el is not None else "littleEndian"
+    prefix = byte_order_prefix(order)
+    url = file_el.get("url") if file_el is not None else None
+    tdx = locate(header, url, tdx_path) if (blocks or tdx_path is not None) else header
+    allowance = GENERATED_ALLOWANCE + (_size(tdx) if blocks else 0)
+    with TdxSource(tdx) as source:
+        ctx = Context(by_id, blocks, source, prefix, [allowance])
+        groups = tuple(_read_groups(tdm_root, ctx))
+    return TdmFile(
+        groups=groups, metadata=_metadata(tdm_root), properties=read_properties(tdm_root)
+    )
 
 
-def _read_groups(
-    root: ET.Element,
-    by_id: _ElementMap,
-    blocks: _ElementMap,
-    data: bytes,
-    prefix: str,
-) -> list[Group]:
-    tdm_root = root.find(".//{*}tdm_root")
-    group_ids = refs(child_text(tdm_root, "channelgroups")) if tdm_root is not None else []
+def _size(path: Path) -> int:
+    try:
+        return os.stat(path).st_size
+    except OSError:
+        return 0
+
+
+def _read_groups(tdm_root: ET.Element | None, ctx: Context) -> list[Group]:
     groups = []
-    for gid in group_ids:
-        group_el = by_id.get(gid)
+    for gid in refs(child_text(tdm_root, "channelgroups")):
+        group_el = ctx.by_id.get(gid)
         if group_el is None:
             continue
         channels = [
-            _read_channel(by_id[cid], by_id, blocks, data, prefix)
+            _read_channel(ctx.by_id[cid], ctx)
             for cid in refs(child_text(group_el, "channels"))
-            if cid in by_id
+            if cid in ctx.by_id
         ]
         groups.append(
             Group(
                 name=child_text(group_el, "name"),
                 channels=tuple(channels),
                 description=child_text(group_el, "description"),
+                properties=read_properties(group_el),
             )
         )
     return groups
 
 
-def _read_channel(
-    channel_el: ET.Element,
-    by_id: _ElementMap,
-    blocks: _ElementMap,
-    data: bytes,
-    prefix: str,
-) -> Channel:
-    column = by_id.get(one_ref(child_text(channel_el, "local_columns")))
-    if column is None:
-        sequence = Sequence("", "", ())
-    else:
-        sequence = read_sequence(channel_el, column, by_id, blocks, data, prefix)
+def _read_channel(channel_el: ET.Element, ctx: Context) -> Channel:
+    column = resolve(ctx.by_id, channel_el, "local_columns")
+    sequence = Sequence("", "", ()) if column is None else read_sequence(channel_el, column, ctx)
     return Channel(
         name=child_text(channel_el, "name"),
         unit=child_text(channel_el, "unit_string"),
@@ -109,13 +130,19 @@ def _read_channel(
         minimum=_optional_float(child_text(channel_el, "minimum")),
         maximum=_optional_float(child_text(channel_el, "maximum")),
         datatype=child_text(channel_el, "datatype"),
+        properties=read_properties(channel_el),
+    )
+
+
+def _metadata(tdm_root: ET.Element | None) -> FileMetadata:
+    return FileMetadata(
+        name=child_text(tdm_root, "name"),
+        title=child_text(tdm_root, "title"),
+        description=child_text(tdm_root, "description"),
+        author=child_text(tdm_root, "author"),
+        datetime=child_text(tdm_root, "datetime"),
     )
 
 
 def _optional_float(text: str) -> float | None:
-    if not text:
-        return None
-    try:
-        return float(text)
-    except ValueError:
-        return None
+    return float(text) if is_float(text) else None

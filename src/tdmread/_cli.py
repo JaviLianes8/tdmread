@@ -3,15 +3,14 @@
 from __future__ import annotations
 
 import argparse
-import csv
-import io
-import json
+import os
 import sys
 from collections.abc import Sequence
 
 from . import __version__
+from ._cli_output import as_csv, as_json, emit, short
 from ._errors import TdmError
-from ._model import Channel, TdmFile
+from ._model import TdmFile
 from ._reader import read_tdm
 
 _EXAMPLES = """\
@@ -20,11 +19,19 @@ examples:
   tdmread channels measurement.tdm
   tdmread dump measurement.tdm --group Amplitudes --channel "A = 1" --format csv
   tdmread dump measurement.tdm -g Amplitudes -c "A = 1" -f json -o values.json
+
+exit status: 0 on success, 1 when a file cannot be read, 2 for a usage error,
+130 when interrupted.
 """
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    """Entry point for the `tdmread` console script. Returns a process exit code."""
+    """Entry point for the ``tdmread`` console script. Returns a process exit code.
+
+    >>> from tdmread._cli import main
+    >>> main(["info", "no-such-file.tdm"])
+    1
+    """
     parser = _build_parser()
     args = parser.parse_args(argv)
     if args.command is None:
@@ -32,13 +39,27 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
     try:
         exit_code: int = args.handler(args)
+        sys.stdout.flush()
         return exit_code
-    except TdmError as exc:
-        print(f"tdmread: error: {exc}", file=sys.stderr)
+    except BrokenPipeError:
+        # The reader of our output went away (for example `| head`): stop quietly, and
+        # point stdout at the null device so the final flush at exit cannot fail again.
+        _silence_stdout()
         return 1
-    except OSError as exc:
-        print(f"tdmread: error: {exc}", file=sys.stderr)
+    except KeyboardInterrupt:
+        return 130
+    except (TdmError, OSError) as exc:
+        emit(f"tdmread: error: {short(str(exc))}\n", sys.stderr)
         return 1
+
+
+def _silence_stdout() -> None:
+    try:
+        devnull = os.open(os.devnull, os.O_WRONLY)
+        os.dup2(devnull, sys.stdout.fileno())
+        os.close(devnull)
+    except (OSError, ValueError, AttributeError):
+        pass
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -52,26 +73,28 @@ def _build_parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="command", metavar="command")
 
     info = sub.add_parser("info", help="print dataset metadata and a group summary")
-    info.add_argument("tdm", help="path to the .tdm header file")
-    info.add_argument("--tdx", help="path to the .tdx data file (default: from the header)")
+    _add_files(info)
     info.set_defaults(handler=_cmd_info)
 
     channels = sub.add_parser("channels", help="list every channel with its type and length")
-    channels.add_argument("tdm", help="path to the .tdm header file")
-    channels.add_argument("--tdx", help="path to the .tdx data file (default: from the header)")
+    _add_files(channels)
     channels.set_defaults(handler=_cmd_channels)
 
     dump = sub.add_parser("dump", help="dump one channel's values to CSV or JSON")
-    dump.add_argument("tdm", help="path to the .tdm header file")
+    _add_files(dump)
     dump.add_argument("-g", "--group", required=True, help="group name")
     dump.add_argument("-c", "--channel", required=True, help="channel name")
     dump.add_argument(
         "-f", "--format", choices=("csv", "json"), default="csv", help="output format"
     )
     dump.add_argument("-o", "--output", help="write to this file instead of standard output")
-    dump.add_argument("--tdx", help="path to the .tdx data file (default: from the header)")
     dump.set_defaults(handler=_cmd_dump)
     return parser
+
+
+def _add_files(command: argparse.ArgumentParser) -> None:
+    command.add_argument("tdm", help="path to the .tdm header file")
+    command.add_argument("--tdx", help="path to the .tdx data file (default: from the header)")
 
 
 def _load(args: argparse.Namespace) -> TdmFile:
@@ -81,61 +104,44 @@ def _load(args: argparse.Namespace) -> TdmFile:
 def _cmd_info(args: argparse.Namespace) -> int:
     dataset = _load(args)
     meta = dataset.metadata
-    for label, value in (
-        ("name", meta.name),
-        ("title", meta.title),
-        ("author", meta.author),
-        ("datetime", meta.datetime),
-        ("description", meta.description),
-    ):
-        if value:
-            print(f"{label}: {value}")
-    print(f"groups: {len(dataset.groups)}")
-    for group in dataset.groups:
-        print(f"  {group.name} ({len(group.channels)} channels)")
+    lines = [
+        f"{label}: {value}"
+        for label, value in (
+            ("name", meta.name),
+            ("title", meta.title),
+            ("author", meta.author),
+            ("datetime", meta.datetime),
+            ("description", meta.description),
+        )
+        if value
+    ]
+    lines.append(f"groups: {len(dataset.groups)}")
+    lines.extend(f"  {group.name} ({len(group.channels)} channels)" for group in dataset)
+    emit("\n".join(lines) + "\n")
     return 0
 
 
 def _cmd_channels(args: argparse.Namespace) -> int:
     dataset = _load(args)
+    lines = []
     for group, channel in dataset.channels():
-        kind = channel.value_type or channel.representation or "?"
+        kind = channel.value_type or channel.representation or channel.datatype or "?"
         unit = f" [{channel.unit}]" if channel.unit else ""
-        print(f"{group.name}\t{channel.name}{unit}\t{kind}\t{len(channel)}")
+        lines.append(f"{group.name}\t{channel.name}{unit}\t{kind}\t{len(channel)}")
+    emit("".join(line + "\n" for line in lines))
     return 0
 
 
 def _cmd_dump(args: argparse.Namespace) -> int:
     dataset = _load(args)
     channel = dataset.group(args.group).channel(args.channel)
-    text = _as_csv(channel) if args.format == "csv" else _as_json(channel)
+    text = as_csv(channel) if args.format == "csv" else as_json(channel)
     if args.output:
         with open(args.output, "w", encoding="utf-8", newline="") as handle:
             handle.write(text)
     else:
-        sys.stdout.write(text)
+        emit(text)
     return 0
-
-
-def _as_csv(channel: Channel) -> str:
-    buffer = io.StringIO()
-    writer = csv.writer(buffer)
-    writer.writerow(["index", channel.name or "value"])
-    for index, value in enumerate(channel.data):
-        writer.writerow([index, repr(value)])
-    return buffer.getvalue()
-
-
-def _as_json(channel: Channel) -> str:
-    payload = {
-        "name": channel.name,
-        "unit": channel.unit,
-        "value_type": channel.value_type,
-        "representation": channel.representation,
-        "length": len(channel),
-        "data": list(channel.data),
-    }
-    return json.dumps(payload, indent=2) + "\n"
 
 
 if __name__ == "__main__":
