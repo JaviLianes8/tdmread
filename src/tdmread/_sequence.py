@@ -2,7 +2,8 @@
 
 The rules follow NI's own reader, checked on files it wrote and on probes it read:
 ``implicit_linear`` is ``start + index * increment`` (a lone start gives a constant),
-``implicit_constant`` repeats its value, ``raw_linear`` and ``raw_linear_external``
+``implicit_constant`` repeats its value (a column without generation_parameters takes
+them from the first stored values), ``raw_linear`` and ``raw_linear_external``
 scale stored values as ``offset + factor * raw``, and generated channels take their
 length from the submatrix row count.
 """
@@ -70,7 +71,7 @@ def _generate(
             f"is {ctx.budget[0]} more"
         )
     ctx.budget[0] -= count
-    params = _parameters(column, 1, representation)
+    params = _generation(column, representation, ctx)
     start = params[0]
     step = params[1] if representation == "implicit_linear" and len(params) > 1 else 0.0
     if step == 0.0:
@@ -78,16 +79,27 @@ def _generate(
     return tuple(start + index * step for index in range(count))
 
 
+def _generation(column: ET.Element, representation: str, ctx: Context) -> tuple[float, ...]:
+    # Without generation_parameters, NI's reader takes the start and the increment from
+    # the first two values of the sequence the column refers to.
+    if child_text(column, "generation_parameters"):
+        return _parameters(column, 1, representation)
+    _, stored = read_values(column, ctx.by_id, ctx.blocks, ctx.tdx, ctx.prefix)
+    if not stored:
+        raise TdmError(f"{representation} channel has no generation parameters")
+    return _numbers(stored, representation)[:2]
+
+
 def _numbers(values: Values, representation: str) -> tuple[float, ...]:
     if not all(isinstance(value, (int, float)) for value in values):
-        raise TdmError(f"a {representation} channel must store numbers")
+        raise TdmError(f"{representation} channel must store numbers")
     return cast("tuple[float, ...]", values)
 
 
 def _parameters(column: ET.Element, needed: int, representation: str) -> tuple[float, ...]:
     tokens = child_text(column, "generation_parameters").split()
     if len(tokens) < needed:
-        raise TdmError(f"a {representation} channel needs {needed} generation parameter(s)")
+        raise TdmError(f"{representation} channel needs {needed} generation parameter(s)")
     return tuple(parse_float(token) for token in tokens[:2])
 
 

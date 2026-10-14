@@ -51,10 +51,11 @@ def test_generates_offset_and_increment(tmp_path: Path) -> None:
     assert channel.data == (10.0, 12.5, 15.0, 17.5, 20.0)
 
 
-def test_missing_generation_parameters_defaults_to_index_axis(tmp_path: Path) -> None:
+def test_missing_generation_parameters_and_stored_values_raise(tmp_path: Path) -> None:
+    # NI's reader takes missing parameters from the stored values; here there are none.
     tdm = _write(tmp_path, 4, "")
-    channel = read_tdm(tdm).group("Axis").channel("time")
-    assert channel.data == (0.0, 1.0, 2.0, 3.0)
+    with pytest.raises(TdmError):
+        read_tdm(tdm)
 
 
 def test_implicit_channel_needs_no_tdx(tmp_path: Path) -> None:
