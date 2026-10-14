@@ -15,7 +15,7 @@ from typing import NamedTuple, cast
 
 from ._channel import Values
 from ._errors import TdmError, UnsupportedTdmError, quote
-from ._explicit import read_values
+from ._explicit import read_values, values_ref
 from ._numbers import parse_float
 from ._tdx import TdxSource
 from ._xml import ElementMap, child, child_text, parse_int, resolve
@@ -43,17 +43,49 @@ class Context(NamedTuple):
     tdx: TdxSource
     prefix: str
     budget: list[int]
+    cache: dict[object, object]
 
 
 def read_sequence(channel: ET.Element, column: ET.Element, ctx: Context) -> Sequence:
-    """Decode the values that `column`, a localcolumn of `channel`, describes."""
+    """Decode the values that `column`, a localcolumn of `channel`, describes.
+
+    Each column and each value sequence is decoded once per dataset, however many
+    channels refer to it, so shared references cost no more than one.
+    """
+    key = ("column", id(column))
+    if key not in ctx.cache:
+        ctx.cache[key] = _decode(channel, column, ctx)
+    return cast(Sequence, ctx.cache[key])
+
+
+def _stored(column: ET.Element, ctx: Context) -> tuple[str, Values]:
+    ref = values_ref(column)
+    if ref is None:
+        return "", ()
+    key = ("values", ref)
+    if key not in ctx.cache:
+        ctx.cache[key] = read_values(column, ctx.by_id, ctx.blocks, ctx.tdx, ctx.prefix, ctx.cache)
+    return cast("tuple[str, Values]", ctx.cache[key])
+
+
+def _charge(count: int, ctx: Context) -> None:
+    if count > ctx.budget[0]:
+        raise TdmError(
+            f"generated channels would need {count} values; the limit for this file "
+            f"is {ctx.budget[0]} more"
+        )
+    ctx.budget[0] -= count
+
+
+def _decode(channel: ET.Element, column: ET.Element, ctx: Context) -> Sequence:
     representation = child_text(column, "sequence_representation") or "explicit"
     if representation == "explicit":
-        value_type, values = read_values(column, ctx.by_id, ctx.blocks, ctx.tdx, ctx.prefix)
+        value_type, values = _stored(column, ctx)
         return Sequence(value_type, representation, values)
     if representation in _RAW:
-        value_type, raw = read_values(column, ctx.by_id, ctx.blocks, ctx.tdx, ctx.prefix)
+        value_type, raw = _stored(column, ctx)
         offset, factor = _parameters(column, 2, representation)
+        _charge(len(raw), ctx)
         scaled = tuple(offset + factor * value for value in _numbers(raw, representation))
         return Sequence(value_type, representation, scaled)
     if representation in _GENERATED:
@@ -65,12 +97,7 @@ def _generate(
     channel: ET.Element, column: ET.Element, representation: str, ctx: Context
 ) -> tuple[float, ...]:
     count = _length(channel, column, ctx.by_id)
-    if count > ctx.budget[0]:
-        raise TdmError(
-            f"generated channels would need {count} values; the limit for this file "
-            f"is {ctx.budget[0]} more"
-        )
-    ctx.budget[0] -= count
+    _charge(count, ctx)
     params = _generation(column, representation, ctx)
     start = params[0]
     step = params[1] if representation == "implicit_linear" and len(params) > 1 else 0.0
@@ -84,7 +111,7 @@ def _generation(column: ET.Element, representation: str, ctx: Context) -> tuple[
     # the first two values of the sequence the column refers to.
     if child_text(column, "generation_parameters"):
         return _parameters(column, 1, representation)
-    _, stored = read_values(column, ctx.by_id, ctx.blocks, ctx.tdx, ctx.prefix)
+    _, stored = _stored(column, ctx)
     if not stored:
         raise TdmError(f"{representation} channel has no generation parameters")
     return _numbers(stored, representation)[:2]

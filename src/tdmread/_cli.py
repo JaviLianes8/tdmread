@@ -8,7 +8,7 @@ import sys
 from collections.abc import Sequence
 
 from . import __version__
-from ._cli_output import as_csv, as_json, emit, emit_data, short
+from ._cli_output import as_csv, as_json, emit, emit_data, emit_error, short
 from ._errors import TdmError
 from ._model import TdmFile
 from ._reader import read_tdm
@@ -28,6 +28,9 @@ exit status: 0 on success, 1 when a file cannot be read, 2 for a usage error,
 def main(argv: Sequence[str] | None = None) -> int:
     """Entry point for the ``tdmread`` console script. Returns a process exit code.
 
+    As with any argparse program, ``--help``, ``--version`` and usage errors raise
+    ``SystemExit`` (codes 0 and 2) instead of returning.
+
     >>> from tdmread._cli import main
     >>> main(["info", "no-such-file.tdm"])
     1
@@ -39,7 +42,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
     try:
         exit_code: int = args.handler(args)
-        sys.stdout.flush()
+        if sys.stdout is not None:
+            sys.stdout.flush()
         return exit_code
     except BrokenPipeError:
         # The reader of our output went away (for example `| head`): stop quietly, and
@@ -49,7 +53,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     except KeyboardInterrupt:
         return 130
     except (TdmError, OSError) as exc:
-        emit(f"tdmread: error: {short(str(exc))}\n", sys.stderr)
+        emit_error(f"tdmread: error: {short(str(exc))}\n")
         return 1
 
 

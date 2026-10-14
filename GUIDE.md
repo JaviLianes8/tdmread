@@ -9,12 +9,17 @@ by a test; the rules about NI's behaviour were checked on LabVIEW 2026 (see "Gro
 `read_tdm(tdm_path, tdx_path=None)` parses the XML header and returns a `TdmFile`.
 
 - The `.tdx` is the file the header names (`<file url="...">`), in the header's folder or
-  below it. A header that names an absolute path, a drive, a URL scheme or a step out with
-  `..` is refused with `TdmError`, so a header cannot make the reader open an unrelated
-  file. Pass `tdx_path` to read a `.tdx` from anywhere.
+  below it. A header that names an absolute path, a drive, a URL scheme, a step out with
+  `..`, a name made only of dots or spaces, or a character no Windows file name can hold
+  (control characters and any of `:<>"|?*`) is refused with `TdmError`, so a header cannot
+  make the reader open an unrelated file. Only the text is checked: a symbolic link placed
+  in the header's folder is followed. Pass `tdx_path` to read a `.tdx` from anywhere.
 - The `.tdx` is opened only when a channel stores values in it, and only the byte ranges
-  the channels use are read, so a header whose values are all inline or generated needs no
-  `.tdx`, and a large `.tdx` is never loaded whole.
+  the blocks cover are read (for a `block_bm`, the whole span from its first to its last
+  value), so a header whose values are all inline or generated needs no `.tdx`, and a large
+  `.tdx` is never loaded whole.
+- Every channel, column, value sequence and block is decoded once per dataset, however
+  many times the header refers to it; channels that share them share the same tuple.
 - Paths may be `str` or any `os.PathLike`.
 
 ## The result
@@ -147,7 +152,10 @@ an interrupt with 130, and a closed output pipe ends the command quietly with 1.
   values plus one per byte of the `.tdx`. A header asking for more raises `TdmError` at
   once instead of filling memory.
 - Headers that declare a DTD are refused: TDM headers never use one, and refusing them
-  rules out entity expansion whatever XML library runs underneath.
+  rules out entity expansion whatever XML library runs underneath. The check looks for
+  `<!DOCTYPE` and `<!ENTITY` anywhere in the file, so a comment that mentions them is
+  refused too (NI escapes such text in values).
+- Scaled (`raw_linear`) channels count against the same allowance as generated ones.
 
 ## Where tdmread differs from NI's reader
 

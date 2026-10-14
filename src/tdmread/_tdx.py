@@ -9,13 +9,16 @@ from typing import BinaryIO
 from ._errors import TdmError, TdmFileNotFoundError, quote
 
 StrPath = str | os.PathLike[str]
+# Characters no Windows file name can hold, and the drive or stream separator.
+_FORBIDDEN = frozenset(':<>"|?*')
 
 
 def locate(header: Path, url: str | None, override: StrPath | None) -> Path:
     """Return the .tdx path: `override` if given, else `url` next to the header.
 
     The header's `url` must name a file in the header's folder or below it; an absolute
-    path, a drive, a URL scheme or a step out with ``..`` is refused, so a header cannot
+    path, a drive, a URL scheme, a step out with ``..``, a name that is only dots or
+    spaces, and characters no Windows file name can hold are refused, so a header cannot
     point the reader at an unrelated file. Pass `override` to read a .tdx elsewhere.
     """
     if override is not None:
@@ -24,8 +27,8 @@ def locate(header: Path, url: str | None, override: StrPath | None) -> Path:
         raise TdmError("the .tdm header does not name its .tdx file")
     posix, windows = PurePosixPath(url), PureWindowsPath(url)
     if (
-        "\x00" in url
-        or ":" in url
+        any(ord(char) < 32 or char in _FORBIDDEN for char in url)
+        or url.replace("\\", "/").rsplit("/", 1)[-1].strip(" .") == ""
         or posix.is_absolute()
         or windows.is_absolute()
         or ".." in windows.parts
@@ -72,6 +75,8 @@ class TdxSource:
                 ) from None
             except PermissionError:
                 raise
+            except ValueError:
+                raise TdmError(f"cannot open the .tdx {quote(str(self._path))}") from None
             except OSError as exc:
                 # A name the system cannot open (too long, reserved characters) is a bad
                 # dataset, not an operating-system failure.

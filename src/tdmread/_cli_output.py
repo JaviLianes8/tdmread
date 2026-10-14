@@ -61,6 +61,9 @@ def as_json(channel: Channel) -> str:
 def emit(text: str, stream: TextIO | None = None) -> None:
     """Write `text`, replacing characters the stream's encoding cannot show."""
     target = stream if stream is not None else sys.stdout
+    if target is None:
+        # The stream was closed before we started (for example `2>&-`): drop the text.
+        return
     encoding = getattr(target, "encoding", None) or "utf-8"
     try:
         target.write(text)
@@ -68,8 +71,16 @@ def emit(text: str, stream: TextIO | None = None) -> None:
         target.write(text.encode(encoding, "backslashreplace").decode(encoding))
 
 
+def emit_error(text: str) -> None:
+    """Write `text` to standard error, or drop it when standard error is closed."""
+    if sys.stderr is not None:
+        emit(text, sys.stderr)
+
+
 def emit_data(text: str) -> None:
     """Write data output as UTF-8 bytes, whatever the console's encoding."""
+    if sys.stdout is None:
+        return
     buffer = getattr(sys.stdout, "buffer", None)
     if buffer is None:
         sys.stdout.write(text)

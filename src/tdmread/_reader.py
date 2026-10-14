@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 import xml.etree.ElementTree as ET
 from pathlib import Path
+from typing import cast
 
 from ._binary import byte_order_prefix
 from ._channel import Channel
@@ -80,7 +81,7 @@ def read_tdm(tdm_path: StrPath, tdx_path: StrPath | None = None) -> TdmFile:
     tdx = locate(header, url, tdx_path) if (blocks or tdx_path is not None) else header
     allowance = GENERATED_ALLOWANCE + (_size(tdx) if blocks else 0)
     with TdxSource(tdx) as source:
-        ctx = Context(by_id, blocks, source, prefix, [allowance])
+        ctx = Context(by_id, blocks, source, prefix, [allowance], {})
         groups = tuple(_read_groups(tdm_root, ctx))
     return TdmFile(
         groups=groups, metadata=_metadata(tdm_root), properties=read_properties(tdm_root)
@@ -97,14 +98,15 @@ def _parse(data: bytes) -> ET.Element:
         return ET.fromstring(data)
     except ET.ParseError as exc:
         raise TdmError(f"the .tdm header is not well-formed XML ({exc})") from None
-    except LookupError:
-        raise TdmError("the .tdm header declares an unknown text encoding") from None
+    except (LookupError, ValueError):
+        # Unknown encodings, and encodings the XML parser cannot read (multi-byte ones).
+        raise TdmError("the .tdm header declares an unsupported text encoding") from None
 
 
 def _size(path: Path) -> int:
     try:
         return os.stat(path).st_size
-    except OSError:
+    except (OSError, ValueError):
         return 0
 
 
@@ -115,7 +117,7 @@ def _read_groups(tdm_root: ET.Element | None, ctx: Context) -> list[Group]:
         if group_el is None:
             continue
         channels = [
-            _read_channel(ctx.by_id[cid], ctx)
+            _cached_channel(cid, ctx)
             for cid in refs(child_text(group_el, "channels"))
             if cid in ctx.by_id
         ]
@@ -128,6 +130,13 @@ def _read_groups(tdm_root: ET.Element | None, ctx: Context) -> list[Group]:
             )
         )
     return groups
+
+
+def _cached_channel(cid: str, ctx: Context) -> Channel:
+    key = ("channel", cid)
+    if key not in ctx.cache:
+        ctx.cache[key] = _read_channel(ctx.by_id[cid], ctx)
+    return cast(Channel, ctx.cache[key])
 
 
 def _read_channel(channel_el: ET.Element, ctx: Context) -> Channel:
