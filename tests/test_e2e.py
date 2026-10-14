@@ -111,6 +111,6 @@ def test_an_outside_program_uses_the_installed_package(venv: Path, tmp_path: Pat
 
 
 def test_the_wheel_ships_type_information(venv: Path) -> None:
-    probe = (
-        "import importlib.resources as r; print(r.files('tdmread').joinpath('py.typed').is_file())"
-    )
+    probe = "import importlib.resources as r; print(r.files('tdmread') / 'py.typed')"
+    shipped = Path(_run([_python(venv), "-c", probe]).stdout.strip())
+    assert shipped.is_file() and shipped.read_bytes() == b""
