@@ -273,7 +273,7 @@ Changes that can alter what a 0.2.1 call returned or raised:
   on Windows standard output). Both are written as UTF-8 whatever the
   console encoding. `tdmread channels` shows the `DT_*` type of values written in the
   header (0.2.1 had no such channels), and `info` and `channels` escape unprintable characters
-  in names (a tab shows as `	`).
+  in names (a tab shows as `\t`).
 - New: `properties` on `TdmFile`, `Group` and `Channel`; `Channel.numbers()`, `strings()`
   and `times()`; `eSInt8Usi`, `raw_linear`, `raw_linear_external`, `implicit_constant`
   and `block_bm`.
