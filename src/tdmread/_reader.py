@@ -116,19 +116,23 @@ def _read_groups(tdm_root: ET.Element | None, ctx: Context) -> list[Group]:
         group_el = ctx.by_id.get(gid)
         if group_el is None:
             continue
+        key = ("group", gid)
+        if key in ctx.cache:
+            groups.append(cast(Group, ctx.cache[key]))
+            continue
         channels = [
             _cached_channel(cid, ctx)
             for cid in refs(child_text(group_el, "channels"))
             if cid in ctx.by_id
         ]
-        groups.append(
-            Group(
-                name=child_text(group_el, "name"),
-                channels=tuple(channels),
-                description=child_text(group_el, "description"),
-                properties=read_properties(group_el),
-            )
+        group = Group(
+            name=child_text(group_el, "name"),
+            channels=tuple(channels),
+            description=child_text(group_el, "description"),
+            properties=read_properties(group_el),
         )
+        ctx.cache[key] = group
+        groups.append(group)
     return groups
 
 

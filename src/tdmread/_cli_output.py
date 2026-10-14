@@ -90,6 +90,17 @@ def emit_data(text: str) -> None:
     buffer.flush()
 
 
+def visible(text: str) -> str:
+    """Escape control characters so a name stays on one line and in one column.
+
+    >>> print(visible("a" + chr(9) + "b"))
+    a\\tb
+    """
+    if all(" " <= char != "\x7f" for char in text):
+        return text
+    return "".join(char if " " <= char != "\x7f" else repr(char)[1:-1] for char in text)
+
+
 def short(message: str) -> str:
     """Cut an error message to :data:`MESSAGE_LIMIT` characters."""
     if len(message) <= MESSAGE_LIMIT:

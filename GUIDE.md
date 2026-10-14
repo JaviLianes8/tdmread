@@ -18,8 +18,10 @@ by a test; the rules about NI's behaviour were checked on LabVIEW 2026 (see "Gro
   the blocks cover are read (for a `block_bm`, the whole span from its first to its last
   value), so a header whose values are all inline or generated needs no `.tdx`, and a large
   `.tdx` is never loaded whole.
-- Every channel, column, value sequence and block is decoded once per dataset, however
-  many times the header refers to it; channels that share them share the same tuple.
+- Every group, channel, stored column, value sequence and block is decoded once per
+  dataset, however many times the header refers to it; channels that share them share the
+  same tuple. A generated column shared by several channels is generated for each, since
+  its length comes from the channel.
 - Paths may be `str` or any `os.PathLike`.
 
 ## The result
@@ -153,14 +155,16 @@ an interrupt with 130, and a closed output pipe ends the command quietly with 1.
 
 ## Limits
 
-- Generated channels need no stored data, so together they may produce at most ten million
-  values plus one per byte of the `.tdx`. A header asking for more raises `TdmError` at
-  once instead of filling memory.
+- A dataset may produce at most ten million values plus one per byte of the `.tdx`,
+  counting every block decoded from the `.tdx`, every scaled value and every generated
+  value (a block or column shared by several channels counts once). A real file stays far
+  below this, since a stored value takes at least one byte; a header asking for more (for
+  example many overlapping blocks, or a huge generated axis) raises `TdmError` at once
+  instead of filling memory.
 - Headers that declare a DTD are refused: TDM headers never use one, and refusing them
   rules out entity expansion whatever XML library runs underneath. The check looks for
   `<!DOCTYPE` and `<!ENTITY` anywhere in the file, so a comment that mentions them is
   refused too (NI escapes such text in values).
-- Scaled (`raw_linear`) channels count against the same allowance as generated ones.
 
 ## Where tdmread differs from NI's reader
 
@@ -230,7 +234,8 @@ Changes that can alter what a 0.2.1 call returned or raised:
   and rows end with LF (0.2.1 ended them with CRLF, which showed as blank lines between rows
   on Windows standard output). Both are written as UTF-8 whatever the
   console encoding. `tdmread channels` shows the `DT_*` type of values written in the
-  header (0.2.1 had no such channels).
+  header (0.2.1 had no such channels), and `info` and `channels` escape control characters
+  in names (a tab shows as `	`).
 - New: `properties` on `TdmFile`, `Group` and `Channel`; `Channel.numbers()`, `strings()`
   and `times()`; `eSInt8Usi`, `raw_linear`, `raw_linear_external`, `implicit_constant`
   and `block_bm`.

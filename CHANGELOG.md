@@ -36,7 +36,8 @@ against NI's own reader; GUIDE.md lists the rules and the few deliberate differe
   a DTD, an unknown encoding and malformed XML raise `TdmError`.
 - The .tdx must sit in the header's folder or below it unless `tdx_path` is given, and is
   read in ranges, on demand, instead of whole.
-- Generated channels are capped at ten million values plus one per .tdx byte per file.
+- A dataset may produce at most ten million values plus one per .tdx byte (stored, scaled
+  and generated together); shared references are decoded once.
 - Error messages quote at most 40 characters of file text; the command cuts them at 300.
 - A .tdx name made only of dots or spaces, or holding characters no Windows file name can
   hold, is refused; a .tdx name the system cannot open raises `TdmError`; `block_mr` layouts raise
@@ -45,8 +46,9 @@ against NI's own reader; GUIDE.md lists the rules and the few deliberate differe
 - `tdmread dump -f json` writes valid, ASCII-only JSON (non-finite floats as strings, times
   as ISO text) and adds `datatype`; CSV writes times as ISO text and LF line endings; both
   are written as UTF-8 whatever the console encoding. `tdmread channels` shows the `DT_*`
-  type of values written in the header. An interrupt exits with 130 and a closed output
-  pipe ends the command quietly.
+  type of values written in the header; `info` and `channels` escape control characters
+  in names. An interrupt exits with 130, and a closed output pipe or closed standard
+  stream ends the command quietly.
 
 ## [0.2.1]
 

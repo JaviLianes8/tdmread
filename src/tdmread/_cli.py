@@ -8,7 +8,7 @@ import sys
 from collections.abc import Sequence
 
 from . import __version__
-from ._cli_output import as_csv, as_json, emit, emit_data, emit_error, short
+from ._cli_output import as_csv, as_json, emit, emit_data, emit_error, short, visible
 from ._errors import TdmError
 from ._model import TdmFile
 from ._reader import read_tdm
@@ -109,7 +109,7 @@ def _cmd_info(args: argparse.Namespace) -> int:
     dataset = _load(args)
     meta = dataset.metadata
     lines = [
-        f"{label}: {value}"
+        f"{label}: {visible(value)}"
         for label, value in (
             ("name", meta.name),
             ("title", meta.title),
@@ -120,7 +120,7 @@ def _cmd_info(args: argparse.Namespace) -> int:
         if value
     ]
     lines.append(f"groups: {len(dataset.groups)}")
-    lines.extend(f"  {group.name} ({len(group.channels)} channels)" for group in dataset)
+    lines.extend(f"  {visible(g.name)} ({len(g.channels)} channels)" for g in dataset)
     emit("\n".join(lines) + "\n")
     return 0
 
@@ -130,8 +130,9 @@ def _cmd_channels(args: argparse.Namespace) -> int:
     lines = []
     for group, channel in dataset.channels():
         kind = channel.value_type or channel.datatype or channel.representation or "?"
-        unit = f" [{channel.unit}]" if channel.unit else ""
-        lines.append(f"{group.name}\t{channel.name}{unit}\t{kind}\t{len(channel)}")
+        unit = f" [{visible(channel.unit)}]" if channel.unit else ""
+        name = f"{visible(group.name)}\t{visible(channel.name)}{unit}"
+        lines.append(f"{name}\t{visible(kind)}\t{len(channel)}")
     emit("".join(line + "\n" for line in lines))
     return 0
 

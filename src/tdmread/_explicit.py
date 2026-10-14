@@ -20,6 +20,7 @@ def read_values(
     tdx: TdxSource,
     prefix: str,
     cache: dict[object, object] | None = None,
+    budget: list[int] | None = None,
 ) -> tuple[str, Values]:
     """Return ``(value_type, values)`` for the sequence `column` refers to.
 
@@ -41,14 +42,14 @@ def read_values(
     key = ("block", external)
     if cache is not None and key in cache:
         return cast("tuple[str, Values]", cache[key])
-    found = _block_values(blocks, external, tdx, prefix)
+    found = _block_values(blocks, external, tdx, prefix, budget)
     if cache is not None:
         cache[key] = found
     return found
 
 
 def _block_values(
-    blocks: ElementMap, external: str, tdx: TdxSource, prefix: str
+    blocks: ElementMap, external: str, tdx: TdxSource, prefix: str, budget: list[int] | None
 ) -> tuple[str, Values]:
     block = blocks.get(external)
     if block is None:
@@ -60,8 +61,20 @@ def _block_values(
     layout = block_layout(block, size)
     if layout.length == 0:
         return value_type, ()
+    if budget is not None:
+        charge(layout.length, budget)
     start, end = span(layout, size)
     return value_type, decode(tdx.read(start, end), layout, value_type, prefix)
+
+
+def charge(count: int, budget: list[int]) -> None:
+    """Take `count` values from the dataset's allowance, or raise :class:`TdmError`."""
+    if count > budget[0]:
+        raise TdmError(
+            f"the channels would need {count} more values; the limit for this file "
+            f"is {budget[0]} more"
+        )
+    budget[0] -= count
 
 
 def values_ref(column: ET.Element) -> str | None:
