@@ -31,7 +31,7 @@ def test_module_doctests_pass(name: str) -> None:
 def _members(obj: object) -> list[tuple[str, object]]:
     if not inspect.isclass(obj):
         return [("", obj)]
-    found = [("", obj)]
+    found: list[tuple[str, object]] = [("", obj)]
     for attr, value in vars(obj).items():
         if attr.startswith("_") and attr not in ("__len__", "__iter__"):
             continue
