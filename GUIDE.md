@@ -194,7 +194,8 @@ Changes that can alter what a 0.2.1 call returned or raised:
 - `eInt8Usi` is read as an unsigned byte (0.2.1 read it as signed, so 255 came back as -1).
 - String channels and time channels are read (0.2.1 returned an empty tuple for string
   channels and refused times); `Channel.data` is typed as numbers, strings or datetimes.
-- Inline values are read (0.2.1 returned an empty tuple).
+- Inline values are read, and a malformed one raises `TdmError` (0.2.1 returned an empty
+  tuple for both).
 - `implicit_linear` takes its length from the row count first (0.2.1 preferred
   `NI_ChannelLength`); a single generation parameter gives a constant (0.2.1 used an
   increment of 1); missing parameters come from the stored values or raise (0.2.1 produced
@@ -204,7 +205,9 @@ Changes that can alter what a 0.2.1 call returned or raised:
   XML raises `TdmError` instead of `xml.etree.ElementTree.ParseError`.
 - A `.tdx` location outside the header's folder is refused; a `.tdx` name the system
   cannot open raises `TdmError` (0.2.1 raised a plain `OSError`).
-- A `block_mr` layout raises `UnsupportedTdmError` (0.2.1 returned empty channels).
+- A `block_bm` layout is read, and raises `TdmError` when it runs past the end of the
+  `.tdx`; a `block_mr` layout raises `UnsupportedTdmError` (0.2.1 returned empty channels
+  for both).
 - Generated channels over the size limit (see "Limits") raise `TdmError` (0.2.1 built
   them, however large).
 - A missing `.tdx` that no channel needs is no longer an error (0.2.1 raised
@@ -215,7 +218,8 @@ Changes that can alter what a 0.2.1 call returned or raised:
 - `tdmread dump`: JSON writes non-finite floats as the strings `"inf"`, `"-inf"` and
   `"nan"` (0.2.1 wrote `Infinity` and `NaN`, which are not JSON), times as ISO text, and
   adds `datatype`; it stays ASCII-only. CSV writes times as ISO text, strings as they are,
-  and LF line endings (0.2.1 wrote CRLF to a file). Both are written as UTF-8 whatever the
+  and rows end with LF (0.2.1 ended them with CRLF, which showed as blank lines between rows
+  on Windows standard output). Both are written as UTF-8 whatever the
   console encoding. `tdmread channels` shows the `DT_*` type of values written in the
   header (0.2.1 had no such channels).
 - New: `properties` on `TdmFile`, `Group` and `Channel`; `Channel.numbers()`, `strings()`

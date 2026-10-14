@@ -19,7 +19,8 @@ from tdmread import TdmFile, read_tdm
 
 FIXTURES = Path(__file__).parent / "upstream"
 pytestmark = pytest.mark.skipif(
-    not (FIXTURES / "SineData.tdx").is_file(), reason="run scripts/fetch_upstream.py"
+    not (FIXTURES / "SineData.tdx").is_file(),
+    reason="samples not fetched (scripts/fetch_upstream.py in the source repository)",
 )
 
 
