@@ -38,7 +38,8 @@ against NI's own reader; GUIDE.md lists the rules and the few deliberate differe
   read in ranges, on demand, instead of whole.
 - Generated channels are capped at ten million values plus one per .tdx byte per file.
 - Error messages quote at most 40 characters of file text; the command cuts them at 300.
-- A .tdx name the system cannot open raises `TdmError`; `block_mr` layouts raise
+- A .tdx name made only of dots or spaces, or holding characters no Windows file name can
+  hold, is refused; a .tdx name the system cannot open raises `TdmError`; `block_mr` layouts raise
   `UnsupportedTdmError`; a missing .tdx no channel needs is no longer an error; the first of
   two elements sharing an id is used. GUIDE.md "Upgrading from 0.2" lists every change.
 - `tdmread dump -f json` writes valid, ASCII-only JSON (non-finite floats as strings, times
