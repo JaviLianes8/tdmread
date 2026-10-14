@@ -50,15 +50,19 @@ and `channel()` return the first match by name and raise `TdmError` when there i
 
 `Channel.data` is a tuple holding one kind of value:
 
-- Numbers: `int` for every integer type, `float` for 32 and 64-bit floats. Values are
-  exactly what is stored; 64-bit integers stay exact and 32-bit floats are widened to
-  Python floats without rounding. Non-finite floats come back as `inf`, `-inf`, `nan`.
+- Numbers: `int` for every integer type, `float` for 32 and 64-bit floats. Values stored
+  in the `.tdx` are exactly what is stored; 64-bit integers stay exact and 32-bit floats
+  are widened to Python floats without rounding. As NI's reader does, inline values in a
+  `byte_sequence` are unsigned (read modulo 256) and inline values in a `float_sequence`
+  are rounded to 32-bit precision. Non-finite floats come back as `inf`, `-inf`, `nan`.
 - Strings: `str`, for string channels written in the header.
 - Times: naive `datetime.datetime`. TDM stores local wall-clock time without a zone; in the
   `.tdx` a time is an unsigned 64-bit fraction of a second (units of 2**-64 s) followed by
   signed 64-bit seconds since 1904-01-01 00:00 (seconds first in a big-endian file). In the
-  header it is ISO text with any number of fractional digits. Both are cut, never rounded,
-  to microseconds. A time outside the years 1 to 9999 raises `TdmError`.
+  header it is ISO text with any number of fractional digits. As NI's reader does, both
+  are rounded to the nearest nanosecond (LabVIEW stores fractions just below the exact
+  value) and then cut to microseconds, the finest unit `datetime` holds. A time outside the
+  years 1 to 9999 raises `TdmError`.
 
 Because `data` can hold any of the three kinds, a type checker sees
 `tuple[float, ...] | tuple[str, ...] | tuple[datetime, ...]`. `numbers()`, `strings()` and
@@ -129,8 +133,9 @@ DataStore API and NI's channel reader returned different values for it.
 
 `properties` is a read-only mapping (hashable and picklable) of each `*_attribute` in the
 element's `instance_attributes`. `byte`, `short`, `long` and `longlong` attributes become
-`int`, `float` and `double` become `float`, `time` becomes a naive `datetime`, and `string`
-becomes `str` (several `<s>` parts are joined with a newline). A value that does not parse
+`int` (a `byte` unsigned, as NI reads it), `float` (rounded to 32-bit precision) and
+`double` become `float`, `time` becomes a naive `datetime` (rounded as above), and `string`
+becomes `str` (of several `<s>` parts NI keeps the first, and so does tdmread). A value that does not parse
 as its declared kind is kept as the raw text. When a name repeats, the first one wins.
 
 ## Errors
@@ -166,6 +171,10 @@ Each case below was observed on NI's reader and is pinned by `tests/test_ni_prob
   block's valueType.
 - NI converts 64-bit integers in a `double_sequence` to floats, and narrows 64-bit floats
   in a `float_sequence` to 32 bits; tdmread returns the stored values exactly.
+- NI's readers return nothing for the sequence kinds `ubyte_sequence`,
+  `ushort_sequence`, `ulong_sequence`, `longlong_sequence` and `ulonglong_sequence`, even
+  with a matching valueType; tdmread reads them (inline as integers, from the `.tdx` by the
+  block's valueType).
 - NI reads the text `1,5` as 1 and `1.5` as 1 in an inline integer sequence; tdmread
   raises `TdmError`.
 - NI returns nothing for a column without `sequence_representation`, for a generated

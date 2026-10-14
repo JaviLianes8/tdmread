@@ -19,7 +19,7 @@ class Channel:
 
     `data` is a tuple holding one kind of value: numbers (``int`` for integer types,
     ``float`` otherwise) for numeric channels, ``str`` for string channels, and naive
-    ``datetime`` (local wall-clock time, cut to microseconds) for time channels.
+    ``datetime`` (local wall-clock time, to the microsecond) for time channels.
     `value_type` is the .tdx valueType the values were stored as (empty when they come
     from the header or are generated), `representation` is the sequence representation
     (``explicit``, ``implicit_linear``, ``implicit_constant``, ``raw_linear`` or

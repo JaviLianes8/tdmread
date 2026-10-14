@@ -52,10 +52,9 @@ def test_integers_may_carry_a_plus_sign(tmp_path: Path) -> None:
 
 @pytest.mark.parametrize("kind", INTS)
 def test_every_inline_integer_sequence_is_read(tmp_path: Path, kind: str) -> None:
-    assert _one(tmp_path, inline(0, f"{kind}_sequence", "7 18446744073709551615")) == (
-        7,
-        18446744073709551615,
-    )
+    # NI reads inline bytes unsigned, modulo 256 (2**64 - 1 is 255 there).
+    big = 255 if kind == "byte" else 18446744073709551615
+    assert _one(tmp_path, inline(0, f"{kind}_sequence", "7 18446744073709551615")) == (7, big)
 
 
 @pytest.mark.parametrize("kind", ("byte", "short", "long", "longlong"))
@@ -63,7 +62,8 @@ def test_integer_properties_are_ints(tmp_path: Path, kind: str) -> None:
     chan = inline(0, "double_sequence", "1")
     chan.extra = PROP.format(kind, "-12")
     _one(tmp_path, chan)
-    assert read_tdm(tmp_path / "data.tdm").group("G").channels[0].properties["p"] == -12
+    expected = 244 if kind == "byte" else -12  # NI reads byte properties unsigned
+    assert read_tdm(tmp_path / "data.tdm").group("G").channels[0].properties["p"] == expected
 
 
 def test_iso_fractions_are_right_padded(tmp_path: Path) -> None:

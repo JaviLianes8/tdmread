@@ -52,11 +52,11 @@ def test_every_value_type_decodes_in_both_byte_orders(
     assert all(type(v) is (float if code in "fd" else int) for v in data)
 
 
-def test_times_are_naive_local_datetimes_cut_to_microseconds(tmp_path: Path) -> None:
+def test_times_are_naive_datetimes_rounded_to_the_nanosecond_then_cut(tmp_path: Path) -> None:
     raw = struct.pack("<Qq", 2**64 - 1, 0) + struct.pack("<Qq", 2**63, 60)
     dataset = Dataset([stored(0, "time_sequence", "t")], block("t", 0, 2, "eTimeUsi"), raw)
     assert _one(tmp_path, dataset) == (
-        datetime(1904, 1, 1, 0, 0, 0, 999999),
+        datetime(1904, 1, 1, 0, 0, 1),
         datetime(1904, 1, 1, 0, 1, 0, 500000),
     )
 

@@ -31,7 +31,7 @@ PROPS = (
 )
 EXPECTED = {
     "s": "text",
-    "two": "a\nb",
+    "two": "a",
     "n": -7,
     "bad": "x",
     "d": 2.5,

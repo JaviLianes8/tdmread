@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import math
 import re
+import struct
 
 from ._errors import TdmError, quote
 
@@ -40,3 +42,25 @@ def parse_float(token: str) -> float:
 def is_float(token: str) -> bool:
     """Tell whether `token` is a valid floating-point token."""
     return len(token) <= 400 and _FLOAT.fullmatch(token) is not None
+
+
+def as_byte(value: int) -> int:
+    """Read an integer as NI reads a byte: unsigned, modulo 256.
+
+    >>> as_byte(-5), as_byte(255)
+    (251, 255)
+    """
+    return value % 256
+
+
+def as_single(value: float) -> float:
+    """Round a float to 32-bit precision, as NI stores ``float`` values.
+
+    >>> as_single(0.1), as_single(-1e300)
+    (0.10000000149011612, -inf)
+    """
+    try:
+        single: float = struct.unpack("<f", struct.pack("<f", value))[0]
+    except OverflowError:
+        return math.copysign(math.inf, value)
+    return single
