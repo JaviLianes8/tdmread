@@ -189,11 +189,21 @@ Each case below was observed on NI's reader and is pinned by `tests/test_ni_prob
   block's valueType).
 - NI does not read `longlong_attribute` properties; tdmread reads them as `int`.
 - When a property name repeats with different kinds, NI keeps the first kind and converts
-  later values into it, ignoring those it cannot convert (and then keeps the first value of
-  every repeated name of that element); tdmread takes the last value as written. Real
-  files never repeat a name.
+  later values into it: if any later value cannot be converted, NI keeps the first value
+  of every repeated name of that element, otherwise the last converted value wins;
+  tdmread takes the last value as written. Real files never repeat a name.
+- NI reads only the first 60 characters of a number written as text (so 61 or more leading
+  zeros read as 0) and reads a property spelled `Infinity` as 0; tdmread reads the whole
+  number (up to 400 characters; longer ones raise `TdmError`, or stay raw text in a
+  property) and reads `Infinity` as infinity.
+- NI reads the leading `YYYY-MM-DDTHH:MM:SS[.fraction]` of a header time and ignores the
+  rest (a `Z` or `+02:00` zone is ignored, not applied; `,5` drops the fraction), gives an
+  empty value for other spellings (date only, no seconds, one-digit fields), and returns
+  year 0000 as is; tdmread accepts only that exact form (with an optional bare trailing
+  dot) in years 1 to 9999 and raises `TdmError` for anything else, or keeps the raw text
+  of such a property.
 - NI normalises impossible header times (`2026-02-30` becomes March 2, second 60 becomes
-  the next minute); tdmread raises `TdmError` for such a value, or keeps the raw text of
+  the next minute, month 13 becomes January of the same year); tdmread raises `TdmError` for such a value, or keeps the raw text of
   such a property.
 - NI reads a property value that does not parse by its leading number (`abc` as 0, `1.5`
   as 1 in a `long_attribute`) and drops a time property that does not parse; tdmread keeps
