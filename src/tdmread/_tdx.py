@@ -67,6 +67,16 @@ class TdxSource:
             try:
                 self._handle = open(self._path, "rb")  # noqa: SIM115 - closed by __exit__
             except FileNotFoundError:
-                raise TdmFileNotFoundError(f"TDX data not found: {self._path}") from None
+                raise TdmFileNotFoundError(
+                    f"TDX data not found: {quote(str(self._path))}"
+                ) from None
+            except PermissionError:
+                raise
+            except OSError as exc:
+                # A name the system cannot open (too long, reserved characters) is a bad
+                # dataset, not an operating-system failure.
+                raise TdmError(
+                    f"cannot open the .tdx {quote(str(self._path))}: {exc.strerror}"
+                ) from None
             self._size = os.fstat(self._handle.fileno()).st_size
         return self._handle

@@ -76,7 +76,7 @@ def test_installed_script_reports_the_version(venv: Path) -> None:
 
 def test_installed_script_lists_and_dumps_a_labview_file(venv: Path) -> None:
     listing = _run([_script(venv), "channels", EVENT])
-    assert listing.returncode == 0 and "Untitled\tEvent Type\texplicit\t8" in listing.stdout
+    assert listing.returncode == 0 and "Untitled\tEvent Type\tDT_STRING\t8" in listing.stdout
     dump = _run([_script(venv), "dump", TYPES, "-g", "Ints", "-c", "u8", "-f", "json"])
     assert dump.returncode == 0, dump.stderr
     assert json.loads(dump.stdout)["data"] == [0, 1, 255, 128, 42]

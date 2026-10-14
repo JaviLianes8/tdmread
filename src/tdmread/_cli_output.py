@@ -55,7 +55,7 @@ def as_json(channel: Channel) -> str:
         "length": len(channel),
         "data": [_json_value(value) for value in channel.data],
     }
-    return json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False) + "\n"
+    return json.dumps(payload, indent=2, ensure_ascii=True, allow_nan=False) + "\n"
 
 
 def emit(text: str, stream: TextIO | None = None) -> None:
@@ -66,6 +66,17 @@ def emit(text: str, stream: TextIO | None = None) -> None:
         target.write(text)
     except UnicodeEncodeError:
         target.write(text.encode(encoding, "backslashreplace").decode(encoding))
+
+
+def emit_data(text: str) -> None:
+    """Write data output as UTF-8 bytes, whatever the console's encoding."""
+    buffer = getattr(sys.stdout, "buffer", None)
+    if buffer is None:
+        sys.stdout.write(text)
+        return
+    sys.stdout.flush()
+    buffer.write(text.encode("utf-8"))
+    buffer.flush()
 
 
 def short(message: str) -> str:

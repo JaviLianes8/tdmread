@@ -8,7 +8,7 @@ import sys
 from collections.abc import Sequence
 
 from . import __version__
-from ._cli_output import as_csv, as_json, emit, short
+from ._cli_output import as_csv, as_json, emit, emit_data, short
 from ._errors import TdmError
 from ._model import TdmFile
 from ._reader import read_tdm
@@ -125,7 +125,7 @@ def _cmd_channels(args: argparse.Namespace) -> int:
     dataset = _load(args)
     lines = []
     for group, channel in dataset.channels():
-        kind = channel.value_type or channel.representation or channel.datatype or "?"
+        kind = channel.value_type or channel.datatype or channel.representation or "?"
         unit = f" [{channel.unit}]" if channel.unit else ""
         lines.append(f"{group.name}\t{channel.name}{unit}\t{kind}\t{len(channel)}")
     emit("".join(line + "\n" for line in lines))
@@ -140,7 +140,7 @@ def _cmd_dump(args: argparse.Namespace) -> int:
         with open(args.output, "w", encoding="utf-8", newline="") as handle:
             handle.write(text)
     else:
-        emit(text)
+        emit_data(text)
     return 0
 
 

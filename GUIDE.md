@@ -194,9 +194,22 @@ Changes that can alter what a 0.2.1 call returned or raised:
 - A reference to a missing sequence or block raises `TdmError` (0.2.1 returned an empty
   channel); a header whose root is not `<tdm>`, or with a DTD, raises `TdmError`; malformed
   XML raises `TdmError` instead of `xml.etree.ElementTree.ParseError`.
-- A `.tdx` location outside the header's folder is refused.
-- The JSON written by `tdmread dump` writes non-finite floats as the strings `"inf"`,
-  `"-inf"` and `"nan"` (0.2.1 wrote `Infinity` and `NaN`, which are not JSON), times as
-  ISO text, and adds `datatype`. CSV writes times as ISO text and strings as they are.
+- A `.tdx` location outside the header's folder is refused; a `.tdx` name the system
+  cannot open raises `TdmError` (0.2.1 raised a plain `OSError`).
+- A `block_mr` layout raises `UnsupportedTdmError` (0.2.1 returned empty channels).
+- Generated channels over the size limit (see "Limits") raise `TdmError` (0.2.1 built
+  them, however large).
+- A missing `.tdx` that no channel needs is no longer an error (0.2.1 raised
+  `TdmFileNotFoundError` whenever the header listed blocks).
+- A block attribute that is not an integer raises `TdmError` (0.2.1 raised `ValueError`).
+- When two elements share an id, the first one is used (0.2.1 used the last).
+- `Channel.to_list()` is typed `list[float] | list[str] | list[datetime]`.
+- `tdmread dump`: JSON writes non-finite floats as the strings `"inf"`, `"-inf"` and
+  `"nan"` (0.2.1 wrote `Infinity` and `NaN`, which are not JSON), times as ISO text, and
+  adds `datatype`; it stays ASCII-only. CSV writes times as ISO text, strings as they are,
+  and LF line endings (0.2.1 wrote CRLF to a file). Both are written as UTF-8 whatever the
+  console encoding. `tdmread channels` shows the `DT_*` type of values written in the
+  header (0.2.1 had no such channels).
 - New: `properties` on `TdmFile`, `Group` and `Channel`; `Channel.numbers()`, `strings()`
-  and `times()`; `raw_linear`, `raw_linear_external`, `implicit_constant` and `block_bm`.
+  and `times()`; `eSInt8Usi`, `raw_linear`, `raw_linear_external`, `implicit_constant`
+  and `block_bm`.

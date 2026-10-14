@@ -38,9 +38,14 @@ against NI's own reader; GUIDE.md lists the rules and the few deliberate differe
   read in ranges, on demand, instead of whole.
 - Generated channels are capped at ten million values plus one per .tdx byte per file.
 - Error messages quote at most 40 characters of file text; the command cuts them at 300.
-- `tdmread dump -f json` writes valid JSON (non-finite floats as strings, times as ISO
-  text) and adds `datatype`; CSV writes times as ISO text. Usage errors exit with 2, an
-  interrupt with 130, and a closed output pipe ends the command quietly.
+- A .tdx name the system cannot open raises `TdmError`; `block_mr` layouts raise
+  `UnsupportedTdmError`; a missing .tdx no channel needs is no longer an error; the first of
+  two elements sharing an id is used. GUIDE.md "Upgrading from 0.2" lists every change.
+- `tdmread dump -f json` writes valid, ASCII-only JSON (non-finite floats as strings, times
+  as ISO text) and adds `datatype`; CSV writes times as ISO text and LF line endings; both
+  are written as UTF-8 whatever the console encoding. `tdmread channels` shows the `DT_*`
+  type of values written in the header. An interrupt exits with 130 and a closed output
+  pipe ends the command quietly.
 
 ## [0.2.1]
 

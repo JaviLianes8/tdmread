@@ -59,7 +59,7 @@ tdmread dump measurement.tdm -g Amplitudes -c "A = 1" -f json -o values.json
 ```
 
 `info` prints the dataset metadata and a group summary, `channels` lists every channel with
-its type and length, and `dump` writes one channel as CSV or JSON. Errors go to standard
+its type and length, and `dump` writes one channel as CSV or JSON (UTF-8). Errors go to standard
 error with exit code 1; usage errors exit with 2. `python -m tdmread` works too.
 
 ## Why

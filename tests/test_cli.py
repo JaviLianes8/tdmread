@@ -50,7 +50,7 @@ def test_channels_lists_every_channel_with_kind_and_length(
         "Untitled\tData\teFloat64Usi\t10000",
         "Untitled\tHistogram\teFloat64Usi\t80",
         "Untitled\tEvent Time\teInt32Usi\t8",
-        "Untitled\tEvent Type\texplicit\t8",
+        "Untitled\tEvent Type\tDT_STRING\t8",
     ]
 
 
