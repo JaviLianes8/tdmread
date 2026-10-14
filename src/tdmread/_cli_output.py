@@ -9,7 +9,7 @@ import json
 import math
 import sys
 from collections.abc import Iterator
-from contextlib import contextmanager
+from contextlib import contextmanager, suppress
 from datetime import datetime
 from typing import TextIO
 
@@ -98,10 +98,8 @@ def emit(text: str, stream: TextIO | None = None) -> None:
 def emit_error(text: str) -> None:
     """Write `text` to standard error, or drop it when standard error is closed."""
     if sys.stderr is not None:
-        try:
+        with suppress(OSError):  # nobody is left to read the error
             emit(text, sys.stderr)
-        except OSError:
-            pass  # nobody is left to read the error
 
 
 def emit_data(text: str) -> None:
