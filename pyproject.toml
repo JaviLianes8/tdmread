@@ -49,7 +49,7 @@ Funding = "https://buymeacoffee.com/jlianesglrs"
 packages = ["src/tdmread"]
 
 [tool.hatch.build.targets.sdist]
-only-include = [
+include = [
     "src/tdmread",
     "tests",
     "README.md",
