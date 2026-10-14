@@ -15,7 +15,7 @@ from typing import NamedTuple, cast
 
 from ._channel import Values
 from ._errors import TdmError, UnsupportedTdmError, quote
-from ._explicit import charge, read_values, values_ref
+from ._explicit import GENERATED, SCALED, charge, read_values, values_ref
 from ._numbers import parse_float
 from ._tdx import TdxSource
 from ._xml import ElementMap, child, child_text, parse_int, resolve
@@ -50,15 +50,24 @@ def read_sequence(channel: ET.Element, column: ET.Element, ctx: Context) -> Sequ
     """Decode the values that `column`, a localcolumn of `channel`, describes.
 
     Each column and each value sequence is decoded once per dataset, however many
-    channels refer to it, so shared references cost no more than one.
+    channels refer to it. A generated column takes its length from the channel, so only
+    its parameters and row count are shared; its values are generated per channel.
     """
-    # A generated column takes its length from the channel, so it is not shared.
-    if child_text(column, "sequence_representation") in _GENERATED:
-        return _decode(channel, column, ctx)
     key = ("column", id(column))
-    if key not in ctx.cache:
-        ctx.cache[key] = _decode(channel, column, ctx)
-    return cast(Sequence, ctx.cache[key])
+    found = ctx.cache.get(key)
+    if found is None:
+        found = _decode(column, ctx)
+        ctx.cache[key] = found
+    if isinstance(found, Sequence):
+        return found
+    representation, rows, params = cast("tuple[str, str, tuple[float, ...]]", found)
+    count = _length(rows or _channel_length(channel))
+    charge(count, ctx.budget, GENERATED)
+    start = params[0]
+    step = params[1] if representation == "implicit_linear" and len(params) > 1 else 0.0
+    if step == 0.0:
+        return Sequence("", representation, (start,) * count)
+    return Sequence("", representation, tuple(start + i * step for i in range(count)))
 
 
 def _stored(column: ET.Element, ctx: Context) -> tuple[str, Values]:
@@ -73,7 +82,7 @@ def _stored(column: ET.Element, ctx: Context) -> tuple[str, Values]:
     return cast("tuple[str, Values]", ctx.cache[key])
 
 
-def _decode(channel: ET.Element, column: ET.Element, ctx: Context) -> Sequence:
+def _decode(column: ET.Element, ctx: Context) -> object:
     representation = child_text(column, "sequence_representation") or "explicit"
     if representation == "explicit":
         value_type, values = _stored(column, ctx)
@@ -81,25 +90,13 @@ def _decode(channel: ET.Element, column: ET.Element, ctx: Context) -> Sequence:
     if representation in _RAW:
         value_type, raw = _stored(column, ctx)
         offset, factor = _parameters(column, 2, representation)
-        charge(len(raw), ctx.budget)
+        charge(len(raw), ctx.budget, SCALED)
         scaled = tuple(offset + factor * value for value in _numbers(raw, representation))
         return Sequence(value_type, representation, scaled)
     if representation in _GENERATED:
-        return Sequence("", representation, _generate(channel, column, representation, ctx))
+        rows = child_text(resolve(ctx.by_id, column, "submatrix"), "number_of_rows")
+        return (representation, rows, _generation(column, representation, ctx))
     raise UnsupportedTdmError(f"unsupported sequence representation {quote(representation)}")
-
-
-def _generate(
-    channel: ET.Element, column: ET.Element, representation: str, ctx: Context
-) -> tuple[float, ...]:
-    count = _length(channel, column, ctx.by_id)
-    charge(count, ctx.budget)
-    params = _generation(column, representation, ctx)
-    start = params[0]
-    step = params[1] if representation == "implicit_linear" and len(params) > 1 else 0.0
-    if step == 0.0:
-        return (start,) * count
-    return tuple(start + index * step for index in range(count))
 
 
 def _generation(column: ET.Element, representation: str, ctx: Context) -> tuple[float, ...]:
@@ -126,10 +123,7 @@ def _parameters(column: ET.Element, needed: int, representation: str) -> tuple[f
     return tuple(parse_float(token) for token in tokens[:2])
 
 
-def _length(channel: ET.Element, column: ET.Element, by_id: ElementMap) -> int:
-    rows = child_text(resolve(by_id, column, "submatrix"), "number_of_rows")
-    if not rows:
-        rows = _channel_length(channel)
+def _length(rows: str) -> int:
     if not rows:
         raise TdmError("a generated channel has no row count (submatrix number_of_rows)")
     count = parse_int(rows, "row count")

@@ -14,10 +14,10 @@ by a test; the rules about NI's behaviour were checked on LabVIEW 2026 (see "Gro
   (control characters and any of `:<>"|?*`) is refused with `TdmError`, so a header cannot
   make the reader open an unrelated file. Only the text is checked: a symbolic link placed
   in the header's folder is followed. Pass `tdx_path` to read a `.tdx` from anywhere.
-- The `.tdx` is opened only when a channel stores values in it, and only the byte ranges
-  the blocks cover are read (for a `block_bm`, the whole span from its first to its last
-  value), so a header whose values are all inline or generated needs no `.tdx`, and a large
-  `.tdx` is never loaded whole.
+- The `.tdx` is opened only when a channel stores values in it, and only the bytes of the
+  blocks' values are read (for a `block_bm` whose values sit close together, the range
+  covering them), so a header whose values are all inline or generated needs no `.tdx`,
+  and a large `.tdx` is never loaded whole.
 - Every group, channel, stored column, value sequence and block is decoded once per
   dataset, however many times the header refers to it; channels that share them share the
   same tuple. A generated column shared by several channels is generated for each, since
@@ -155,12 +155,13 @@ an interrupt with 130, and a closed output pipe ends the command quietly with 1.
 
 ## Limits
 
-- A dataset may produce at most ten million values plus one per byte of the `.tdx`,
-  counting every block decoded from the `.tdx`, every scaled value and every generated
-  value (a block or column shared by several channels counts once). A real file stays far
-  below this, since a stored value takes at least one byte; a header asking for more (for
-  example many overlapping blocks, or a huge generated axis) raises `TdmError` at once
-  instead of filling memory.
+- A dataset may decode at most ten million values plus one per byte of the `.tdx` from
+  `.tdx` blocks, as many again by scaling (`raw_linear`), and as many again by generation
+  (implicit channels); a block or column shared by several channels counts once. A real
+  file stays below each limit, since a stored value takes at least one byte and its scaled
+  copy and time axis are no longer than it; a header asking for more (for example many
+  overlapping blocks, or a huge generated axis) raises `TdmError` at once instead of
+  filling memory.
 - Headers that declare a DTD are refused: TDM headers never use one, and refusing them
   rules out entity expansion whatever XML library runs underneath. The check looks for
   `<!DOCTYPE` and `<!ENTITY` anywhere in the file, so a comment that mentions them is
@@ -234,7 +235,7 @@ Changes that can alter what a 0.2.1 call returned or raised:
   and rows end with LF (0.2.1 ended them with CRLF, which showed as blank lines between rows
   on Windows standard output). Both are written as UTF-8 whatever the
   console encoding. `tdmread channels` shows the `DT_*` type of values written in the
-  header (0.2.1 had no such channels), and `info` and `channels` escape control characters
+  header (0.2.1 had no such channels), and `info` and `channels` escape unprintable characters
   in names (a tab shows as `	`).
 - New: `properties` on `TdmFile`, `Group` and `Channel`; `Channel.numbers()`, `strings()`
   and `times()`; `eSInt8Usi`, `raw_linear`, `raw_linear_external`, `implicit_constant`

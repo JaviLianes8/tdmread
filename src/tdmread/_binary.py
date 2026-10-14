@@ -86,16 +86,9 @@ def span(layout: Layout, size: int) -> tuple[int, int]:
 
 
 def decode(raw: bytes, layout: Layout, value_type: str, prefix: str) -> Decoded:
-    """Decode the values of `layout` from `raw`, which holds exactly its span."""
+    """Decode the contiguous values of `layout` from `raw`, which holds its span."""
     size = item_size(value_type)
-    if layout.stride is not None and layout.length:
-        raw = _gather(raw, layout, size)
     if value_type == _TIME:
         return decode_times(raw[: layout.length * size], prefix)
     code = _STRUCT_CODE[value_type]
     return struct.unpack(f"{prefix}{layout.length}{code}", raw[: layout.length * size])
-
-
-def _gather(raw: bytes, layout: Layout, size: int) -> bytes:
-    stride = layout.stride or size
-    return b"".join(raw[i * stride : i * stride + size] for i in range(layout.length))

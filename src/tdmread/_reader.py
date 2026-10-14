@@ -81,7 +81,7 @@ def read_tdm(tdm_path: StrPath, tdx_path: StrPath | None = None) -> TdmFile:
     tdx = locate(header, url, tdx_path) if (blocks or tdx_path is not None) else header
     allowance = GENERATED_ALLOWANCE + (_size(tdx) if blocks else 0)
     with TdxSource(tdx) as source:
-        ctx = Context(by_id, blocks, source, prefix, [allowance], {})
+        ctx = Context(by_id, blocks, source, prefix, [allowance] * 3, {})
         groups = tuple(_read_groups(tdm_root, ctx))
     return TdmFile(
         groups=groups, metadata=_metadata(tdm_root), properties=read_properties(tdm_root)

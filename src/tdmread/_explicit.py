@@ -64,17 +64,26 @@ def _block_values(
     if budget is not None:
         charge(layout.length, budget)
     start, end = span(layout, size)
-    return value_type, decode(tdx.read(start, end), layout, value_type, prefix)
+    if layout.stride is None:
+        return value_type, decode(tdx.read(start, end), layout, value_type, prefix)
+    # Interleaved values: read only the items, never the whole span between them.
+    raw = tdx.read_items(start, layout.stride, size, layout.length, end)
+    return value_type, decode(raw, Layout(0, layout.length), value_type, prefix)
 
 
-def charge(count: int, budget: list[int]) -> None:
-    """Take `count` values from the dataset's allowance, or raise :class:`TdmError`."""
-    if count > budget[0]:
+# The allowance has one account each for stored, scaled and generated values, so a real
+# file (raw integers, their scaled copy and a time axis) never exceeds it.
+STORED, SCALED, GENERATED = 0, 1, 2
+
+
+def charge(count: int, budget: list[int], account: int = STORED) -> None:
+    """Take `count` values from one account of the allowance, or raise :class:`TdmError`."""
+    if count > budget[account]:
         raise TdmError(
             f"the channels would need {count} more values; the limit for this file "
-            f"is {budget[0]} more"
+            f"is {budget[account]} more"
         )
-    budget[0] -= count
+    budget[account] -= count
 
 
 def values_ref(column: ET.Element) -> str | None:

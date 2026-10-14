@@ -91,14 +91,14 @@ def emit_data(text: str) -> None:
 
 
 def visible(text: str) -> str:
-    """Escape control characters so a name stays on one line and in one column.
+    """Escape unprintable characters so a name stays on one line and in one column.
 
-    >>> print(visible("a" + chr(9) + "b"))
-    a\\tb
+    >>> print(visible("a" + chr(9) + "b" + chr(0x2028) + "c"))
+    a\\tb\\u2028c
     """
-    if all(" " <= char != "\x7f" for char in text):
+    if text.isprintable():
         return text
-    return "".join(char if " " <= char != "\x7f" else repr(char)[1:-1] for char in text)
+    return "".join(char if char.isprintable() else repr(char)[1:-1] for char in text)
 
 
 def short(message: str) -> str:

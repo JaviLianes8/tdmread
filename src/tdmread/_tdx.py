@@ -65,6 +65,23 @@ class TdxSource:
             raise TdmError("the .tdx file changed while it was being read")
         return data
 
+    def read_items(self, start: int, stride: int, size: int, count: int, end: int) -> bytes:
+        """Return `count` items of `size` bytes, `stride` bytes apart from `start`.
+
+        Close items are read as one range; sparse ones are read one by one, so the bytes
+        read never exceed four times the bytes returned.
+        """
+        if stride <= 4 * size:
+            span = self.read(start, end)
+            return b"".join(span[i * stride : i * stride + size] for i in range(count))
+        self.read(end - size, end)  # checks that the last item lies inside the file
+        handle = self._open()
+        pieces = []
+        for index in range(count):
+            handle.seek(start + index * stride)
+            pieces.append(handle.read(size))
+        return b"".join(pieces)
+
     def _open(self) -> BinaryIO:
         if self._handle is None:
             try:
