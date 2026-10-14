@@ -6,6 +6,7 @@ import argparse
 import os
 import sys
 from collections.abc import Sequence
+from typing import TextIO
 
 from . import __version__
 from ._cli_output import (
@@ -44,6 +45,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     >>> main(["info", "no-such-file.tdm"])
     1
     """
+    try:
+        return _run(argv)
+    finally:
+        _settle(sys.stdout)
+        _settle(sys.stderr)
+
+
+def _run(argv: Sequence[str] | None) -> int:
     parser = _build_parser()
     args = parser.parse_args(argv)
     if args.command is None:
@@ -54,9 +63,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         flush_stdout()
         return exit_code
     except BrokenPipeError:
-        # The reader of our output went away (for example `| head`): stop quietly, and
-        # point stdout at the null device so the final flush at exit cannot fail again.
-        _silence_stdout()
+        # The reader of our output went away (for example `| head`): stop quietly.
+        _silence(sys.stdout)
         return 1
     except KeyboardInterrupt:
         return 130
@@ -65,10 +73,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 1
 
 
-def _silence_stdout() -> None:
+def _settle(stream: TextIO | None) -> None:
+    # Flush now; if the reader is gone, point the descriptor at the null device so the
+    # interpreter's own flush at exit cannot fail and change the exit status.
+    if stream is None:
+        return
+    try:
+        stream.flush()
+    except (OSError, ValueError):
+        _silence(stream)
+
+
+def _silence(stream: TextIO | None) -> None:
     try:
         devnull = os.open(os.devnull, os.O_WRONLY)
-        os.dup2(devnull, sys.stdout.fileno())
+        os.dup2(devnull, stream.fileno())  # type: ignore[union-attr]
         os.close(devnull)
     except (OSError, ValueError, AttributeError):
         pass
