@@ -15,8 +15,9 @@ from datetime import datetime, timedelta
 from ._errors import TdmError, quote
 
 EPOCH = datetime(1904, 1, 1)
-_MIN_SECONDS = int((datetime.min - EPOCH).total_seconds())
-_MAX_SECONDS = int((datetime.max - EPOCH).total_seconds())
+_SECOND = timedelta(seconds=1)
+_MIN_SECONDS = (datetime.min - EPOCH) // _SECOND
+_MAX_SECONDS = (datetime.max - EPOCH) // _SECOND
 _ISO = re.compile(
     r"([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})(?:\.([0-9]+))?",
     re.ASCII,

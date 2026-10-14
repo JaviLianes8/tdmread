@@ -17,6 +17,7 @@ from ._tdx import StrPath, TdxSource, locate
 from ._xml import ElementMap, child_text, local_name, refs, resolve
 
 _BLOCKS = frozenset({"block", "block_bm", "block_mr"})
+_DTD_MARKS = ("<!DOCTYPE", "<!ENTITY")
 
 
 def read_tdm(tdm_path: StrPath, tdx_path: StrPath | None = None) -> TdmFile:
@@ -50,10 +51,7 @@ def read_tdm(tdm_path: StrPath, tdx_path: StrPath | None = None) -> TdmFile:
     header = Path(tdm_path)
     if not header.is_file():
         raise TdmFileNotFoundError(f"TDM header not found: {header}")
-    try:
-        root = ET.parse(header).getroot()
-    except ET.ParseError as exc:
-        raise TdmError(f"the .tdm header is not well-formed XML ({exc})") from None
+    root = _parse(header.read_bytes())
 
     if local_name(root) != "tdm":
         raise TdmError("the file is XML but not a TDM header (its root is not <tdm>)")
@@ -86,6 +84,20 @@ def read_tdm(tdm_path: StrPath, tdx_path: StrPath | None = None) -> TdmFile:
     return TdmFile(
         groups=groups, metadata=_metadata(tdm_root), properties=read_properties(tdm_root)
     )
+
+
+def _parse(data: bytes) -> ET.Element:
+    # TDM headers never declare a DTD; refusing one rules out entity expansion and
+    # external entities whatever XML library version runs underneath.
+    for encoding in ("utf-8", "utf-16-le", "utf-16-be"):
+        if any(mark.encode(encoding) in data for mark in _DTD_MARKS):
+            raise TdmError("the .tdm header declares a DTD, which TDM headers never use")
+    try:
+        return ET.fromstring(data)
+    except ET.ParseError as exc:
+        raise TdmError(f"the .tdm header is not well-formed XML ({exc})") from None
+    except LookupError:
+        raise TdmError("the .tdm header declares an unknown text encoding") from None
 
 
 def _size(path: Path) -> int:
