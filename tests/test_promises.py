@@ -147,8 +147,9 @@ def test_a_tdx_outside_the_header_folder_is_refused(tmp_path: Path, url: str) ->
     dataset.url = "data.tdx"
     header = dataset.write(tmp_path)
     header.write_text(header.read_text().replace('url="data.tdx"', f'url="{url}"'))
-    with pytest.raises(TdmError, match="outside"):
+    with pytest.raises(TdmError, match="is outside the header's folder") as caught:
         read_tdm(header)
+    assert not isinstance(caught.value, TdmFileNotFoundError)
 
 
 @pytest.mark.parametrize(
@@ -172,3 +173,17 @@ def test_a_generated_channel_needs_a_row_count(tmp_path: Path) -> None:
     extra += "</long_attribute></instance_attributes>"
     dataset = Dataset([Chan("x", column=column, extra=extra)])
     assert read_tdm(dataset.write(tmp_path)).group("G").channel("x").data == (0.0, 1.0)
+
+
+def test_missing_generation_parameters_come_from_the_first_stored_values(tmp_path: Path) -> None:
+    for representation, expected in (
+        ("implicit_linear", (0.5, 2.5, 4.5)),
+        ("implicit_constant", (0.5, 0.5, 0.5)),
+    ):
+        ch = stored(0, "double_sequence", "inc0")
+        ch.column += f"<sequence_representation>{representation}</sequence_representation>"
+        ch.rows = 3
+        raw = struct.pack("<3d", 0.5, 2.0, 99.0)
+        dataset = Dataset([ch], block("inc0", 0, 3, "eFloat64Usi"), raw)
+        channel = read_tdm(dataset.write(tmp_path)).group("G").channel("ch0")
+        assert channel.data == expected and channel.value_type == ""

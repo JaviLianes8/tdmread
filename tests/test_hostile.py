@@ -88,7 +88,7 @@ def test_bad_blocks_raise_quickly_with_short_messages(tmp_path: Path, blocks: st
 
 def test_unsupported_layouts_say_so(tmp_path: Path) -> None:
     dataset = Dataset([stored(0, "double_sequence", "i")], block("i", 0, 1, "eStringUsi"))
-    _fails(dataset.write(tmp_path), UnsupportedTdmError)
+    assert "strings stored in the .tdx" in _fails(dataset.write(tmp_path), UnsupportedTdmError)
 
 
 @pytest.mark.parametrize(

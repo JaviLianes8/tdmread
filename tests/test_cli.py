@@ -122,6 +122,9 @@ def test_errors_go_to_stderr_with_exit_one(
 def test_a_huge_name_is_cut_in_the_message(capsys: pytest.CaptureFixture[str]) -> None:
     assert main(["dump", SINE, "-g", "Amplitudes", "-c", "x" * 100_000]) == 1
     assert len(capsys.readouterr().err) < 400
+    assert main(["info", "y" * 5_000 + ".tdm"]) == 1
+    err = capsys.readouterr().err
+    assert len(err) == len("tdmread: error: ") + 300 + 1 and err.endswith("...\n")
 
 
 @pytest.mark.parametrize("args", [["dump", SINE], ["frobnicate"], ["dump", SINE, "-f", "xml"]])

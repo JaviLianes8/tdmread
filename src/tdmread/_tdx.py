@@ -28,7 +28,6 @@ def locate(header: Path, url: str | None, override: StrPath | None) -> Path:
         or ":" in url
         or posix.is_absolute()
         or windows.is_absolute()
-        or windows.drive
         or ".." in windows.parts
     ):
         raise TdmError(f"the .tdx location {quote(url)} is outside the header's folder")
