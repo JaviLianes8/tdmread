@@ -3,10 +3,13 @@
 from __future__ import annotations
 
 import csv
+import errno
 import io
 import json
 import math
 import sys
+from collections.abc import Iterator
+from contextlib import contextmanager
 from datetime import datetime
 from typing import TextIO
 
@@ -58,6 +61,26 @@ def as_json(channel: Channel) -> str:
     return json.dumps(payload, indent=2, ensure_ascii=True, allow_nan=False) + "\n"
 
 
+@contextmanager
+def _closed_reader_is_a_broken_pipe() -> Iterator[None]:
+    # On Windows a reader that has already gone shows as EINVAL, not as a broken pipe.
+    try:
+        yield
+    except BrokenPipeError:
+        raise
+    except OSError as exc:
+        if exc.errno == errno.EINVAL or getattr(exc, "winerror", None) == 232:
+            raise BrokenPipeError(str(exc)) from exc
+        raise
+
+
+def flush_stdout() -> None:
+    """Flush standard output, if it is open, treating a vanished reader as a broken pipe."""
+    if sys.stdout is not None:
+        with _closed_reader_is_a_broken_pipe():
+            sys.stdout.flush()
+
+
 def emit(text: str, stream: TextIO | None = None) -> None:
     """Write `text`, replacing characters the stream's encoding cannot show."""
     target = stream if stream is not None else sys.stdout
@@ -65,16 +88,20 @@ def emit(text: str, stream: TextIO | None = None) -> None:
         # The stream was closed before we started (for example `2>&-`): drop the text.
         return
     encoding = getattr(target, "encoding", None) or "utf-8"
-    try:
-        target.write(text)
-    except UnicodeEncodeError:
-        target.write(text.encode(encoding, "backslashreplace").decode(encoding))
+    with _closed_reader_is_a_broken_pipe():
+        try:
+            target.write(text)
+        except UnicodeEncodeError:
+            target.write(text.encode(encoding, "backslashreplace").decode(encoding))
 
 
 def emit_error(text: str) -> None:
     """Write `text` to standard error, or drop it when standard error is closed."""
     if sys.stderr is not None:
-        emit(text, sys.stderr)
+        try:
+            emit(text, sys.stderr)
+        except OSError:
+            pass  # nobody is left to read the error
 
 
 def emit_data(text: str) -> None:
@@ -85,9 +112,10 @@ def emit_data(text: str) -> None:
     if buffer is None:
         sys.stdout.write(text)
         return
-    sys.stdout.flush()
-    buffer.write(text.encode("utf-8"))
-    buffer.flush()
+    with _closed_reader_is_a_broken_pipe():
+        sys.stdout.flush()
+        buffer.write(text.encode("utf-8"))
+        buffer.flush()
 
 
 def visible(text: str) -> str:

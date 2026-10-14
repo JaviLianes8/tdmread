@@ -97,3 +97,27 @@ def test_interleaved_values_in_close_records_still_read(tmp_path: Path) -> None:
     channels = [stored(0, "double_sequence", "a"), stored(1, "long_sequence", "b")]
     group = read_tdm(Dataset(channels, blocks, raw).write(tmp_path)).group("G")
     assert [c.data for c in group] == [(1.5, 2.5, 3.5), (10, 20, 30)]
+
+
+def test_a_reader_gone_before_the_first_write_ends_the_command_quietly() -> None:
+    import os
+    import subprocess
+    import sys
+
+    repo = Path(__file__).resolve().parent.parent
+    env = dict(os.environ)
+    if (repo / "src").is_dir():
+        env["PYTHONPATH"] = str(repo / "src")
+    header = str(repo / "tests" / "fixtures" / "labview2026" / "Example Event File.tdm")
+    for command in ("channels", "info"):
+        process = subprocess.Popen(
+            [sys.executable, "-m", "tdmread", command, header],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            env=env,
+        )
+        assert process.stdout is not None and process.stderr is not None
+        process.stdout.close()
+        err = process.stderr.read()
+        assert process.wait(timeout=60) == 1
+        assert err == b""

@@ -8,7 +8,16 @@ import sys
 from collections.abc import Sequence
 
 from . import __version__
-from ._cli_output import as_csv, as_json, emit, emit_data, emit_error, short, visible
+from ._cli_output import (
+    as_csv,
+    as_json,
+    emit,
+    emit_data,
+    emit_error,
+    flush_stdout,
+    short,
+    visible,
+)
 from ._errors import TdmError
 from ._model import TdmFile
 from ._reader import read_tdm
@@ -42,8 +51,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
     try:
         exit_code: int = args.handler(args)
-        if sys.stdout is not None:
-            sys.stdout.flush()
+        flush_stdout()
         return exit_code
     except BrokenPipeError:
         # The reader of our output went away (for example `| head`): stop quietly, and
