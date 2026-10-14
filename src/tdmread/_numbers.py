@@ -10,7 +10,7 @@ from ._errors import TdmError, quote
 
 # ASCII decimal notation only: Python's own int() and float() also accept underscores
 # and non-ASCII digits, which no TDM writer produces.
-_INTEGER = re.compile(r"[+-]?[0-9]{1,40}", re.ASCII)
+_INTEGER = re.compile(r"[+-]?[0-9]{1,400}", re.ASCII)
 _FLOAT = re.compile(
     r"[+-]?(?:(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]{1,6})?|inf|infinity|nan)",
     re.ASCII | re.IGNORECASE,

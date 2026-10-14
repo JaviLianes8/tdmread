@@ -106,7 +106,7 @@ def test_times_outside_the_datetime_range_raise(tmp_path: Path, seconds: int) ->
         ("double_sequence", "1_000"),
         ("double_sequence", chr(0x661)),
         ("double_sequence", "1" * 500),
-        ("long_sequence", "9" * 100),
+        ("long_sequence", "9" * 500),
         ("time_sequence", "2026-02-30T00:00:00"),
         ("time_sequence", "2026-10-14 12:00:00"),
         ("tuple_sequence", "1"),

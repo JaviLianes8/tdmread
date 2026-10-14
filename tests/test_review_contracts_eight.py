@@ -59,3 +59,19 @@ def test_a_repeated_property_name_takes_its_last_value(tmp_path: Path) -> None:
     )
     props = read_tdm(Dataset([channel]).write(tmp_path)).groups[0].channels[0].properties
     assert dict(props) == {"n": 2, "s": -1}
+
+
+@pytest.mark.parametrize(
+    ("kind", "expected"), [("byte", (255, 0)), ("short", (-1, 0)), ("long", (2**31 - 1, -(2**31)))]
+)
+def test_integers_of_any_reasonable_length_are_clamped(
+    tmp_path: Path, kind: str, expected: tuple[int, ...]
+) -> None:
+    text = "1" + "0" * 40 + " -" + "9" * 45
+    header = Dataset([inline(0, f"{kind}_sequence", text)]).write(tmp_path)
+    assert read_tdm(header).groups[0].channels[0].data == expected
+
+
+def test_a_header_time_may_end_with_a_bare_dot(tmp_path: Path) -> None:
+    header = Dataset([inline(0, "time_sequence", "2026-10-14T12:00:01.")]).write(tmp_path)
+    assert read_tdm(header).groups[0].channels[0].data == (datetime(2026, 10, 14, 12, 0, 1),)

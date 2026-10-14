@@ -142,7 +142,9 @@ element's `instance_attributes`. `byte`, `short`, `long` and `longlong` attribut
 32-bit precision) and `double` become `float`, `time` becomes a naive `datetime` (rounded
 as above), and `string` becomes `str` (the first `<s>` part, or empty without one, as NI
 reads it). A value that does not parse as its declared kind is kept as the raw text. When
-a name repeats, the last one wins, as in NI's reader.
+a name repeats with the same kind, the last one wins, as in NI's reader. Attributes named
+`name` or `description` are ordinary properties here (NI's reader shows the element's own
+name and description under those names instead).
 
 ## Errors
 
@@ -186,6 +188,13 @@ Each case below was observed on NI's reader and is pinned by `tests/test_ni_prob
   with a matching valueType; tdmread reads them (inline as integers, from the `.tdx` by the
   block's valueType).
 - NI does not read `longlong_attribute` properties; tdmread reads them as `int`.
+- When a property name repeats with different kinds, NI keeps the first kind and converts
+  later values into it, ignoring those it cannot convert (and then keeps the first value of
+  every repeated name of that element); tdmread takes the last value as written. Real
+  files never repeat a name.
+- NI normalises impossible header times (`2026-02-30` becomes March 2, second 60 becomes
+  the next minute); tdmread raises `TdmError` for such a value, or keeps the raw text of
+  such a property.
 - NI reads a property value that does not parse by its leading number (`abc` as 0, `1.5`
   as 1 in a `long_attribute`) and drops a time property that does not parse; tdmread keeps
   the raw text.
