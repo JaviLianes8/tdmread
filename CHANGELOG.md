@@ -17,7 +17,8 @@ against NI's own reader; GUIDE.md lists the rules and the few deliberate differe
 
 - String channels and time channels (`eTimeUsi` in the .tdx, ISO text in the header) are
   read; times are naive local `datetime` values, rounded as NI rounds them.
-- Values written inline in the header (numbers, strings, times).
+- Values written inline in the header (numbers, strings, times), narrowed and rounded as
+  NI's reader does.
 - `implicit_constant`, `raw_linear` and `raw_linear_external` channels, interleaved
   `block_bm` layouts and the signed byte type `eSInt8Usi`.
 - `properties` on `TdmFile`, `Group` and `Channel`: the typed custom properties

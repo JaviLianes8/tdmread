@@ -32,7 +32,6 @@ PROPS = (
 EXPECTED = {
     "s": "text",
     "two": "a",
-    "n": -7,
     "bad": "x",
     "d": 2.5,
     "inf": float("inf"),
@@ -40,6 +39,7 @@ EXPECTED = {
     "t": datetime(2026, 10, 14, 15, 34, 39, 781104),
     "badtime": "yesterday",
     "flag": 1,
+    "n": 99,
     "o": "raw",
 }
 
@@ -51,7 +51,7 @@ def _dataset(tmp_path: Path) -> TdmFile:
     return read_tdm(data.write(tmp_path))
 
 
-def test_properties_are_typed_at_every_level_and_the_first_name_wins(tmp_path: Path) -> None:
+def test_properties_are_typed_at_every_level_and_the_last_name_wins(tmp_path: Path) -> None:
     dataset = _dataset(tmp_path)
     group = dataset.group("G")
     for props in (dataset.properties, group.properties, group.channel("ch0").properties):

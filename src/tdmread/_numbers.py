@@ -84,4 +84,9 @@ def as_long(value: int) -> int:
     return max(-(2**31), min(2**31 - 1, value))
 
 
-NARROW = {"byte": as_byte, "short": as_short, "long": as_long}
+# NI clamps every integer to 32 bits first, then narrows bytes and shorts.
+NARROW = {
+    "byte": lambda value: as_byte(as_long(value)),
+    "short": lambda value: as_short(as_long(value)),
+    "long": as_long,
+}

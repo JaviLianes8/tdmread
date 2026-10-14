@@ -53,8 +53,10 @@ def read_properties(element: ET.Element | None) -> Properties:
     for attr in block:
         name = attr.get("name")
         kind = local_name(attr).removesuffix("_attribute")
-        if name is None or name in found:
+        if name is None:
             continue
+        # As NI's reader does, a repeated name takes its last value.
+        found.pop(name, None)
         found[name] = _value(kind, attr)
     return Properties(found)
 

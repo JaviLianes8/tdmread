@@ -13,6 +13,7 @@ from __future__ import annotations
 import re
 import struct
 from datetime import datetime, timedelta
+from fractions import Fraction
 
 from ._errors import TdmError, quote
 
@@ -64,11 +65,14 @@ def parse_iso(text: str) -> datetime:
     if match is None:
         raise TdmError(f"invalid time {quote(text)}")
     year, month, day, hour, minute, second = (int(part) for part in match.groups()[:6])
-    # NI turns the digits into a 2**-64 fraction (cut) and rounds that like a .tdx time.
-    digits = (match.group(7) or "0")[:40]
-    fraction = int(digits) * 2**64 // 10 ** len(digits)
+    # NI reads the digits as a double, cuts double * 2**64 to a fraction and rounds that
+    # like a .tdx time; a double of exactly 1.0 carries into the next second.
+    fraction = int(Fraction(float("0." + (match.group(7) or "0")[:400])) * 2**64)
     try:
         whole = datetime(year, month, day, hour, minute, second)
     except ValueError:
         raise TdmError(f"invalid time {quote(text)}") from None
-    return from_timestamp((whole - EPOCH) // _SECOND, fraction)
+    seconds = (whole - EPOCH) // _SECOND
+    if fraction >= 2**64:
+        seconds, fraction = seconds + 1, 0
+    return from_timestamp(seconds, fraction)
