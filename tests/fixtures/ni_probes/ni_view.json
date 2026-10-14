@@ -1,0 +1,2169 @@
+{
+ "p01_bytes.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "byte_sequence:eInt8Usi",
+       "values": [
+        0,
+        127,
+        128,
+        255
+       ]
+      },
+      {
+       "name": "byte_sequence:eUInt8Usi",
+       "values": [
+        0,
+        127,
+        128,
+        255
+       ]
+      },
+      {
+       "name": "byte_sequence:eSInt8Usi",
+       "values": [
+        null,
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "name": "short_sequence:eInt8Usi",
+       "values": [
+        0,
+        127,
+        128,
+        255
+       ]
+      },
+      {
+       "name": "short_sequence:eSInt8Usi",
+       "values": [
+        0,
+        127,
+        -128,
+        -1
+       ]
+      },
+      {
+       "name": "long_sequence:eUInt8Usi",
+       "values": [
+        0,
+        127,
+        128,
+        255
+       ]
+      },
+      {
+       "name": "double_sequence:eInt8Usi",
+       "values": [
+        0.0,
+        127.0,
+        128.0,
+        255.0
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "byte_sequence:eInt8Usi",
+       "values": [
+        0,
+        127,
+        128,
+        255
+       ]
+      },
+      {
+       "name": "byte_sequence:eUInt8Usi",
+       "values": [
+        0,
+        127,
+        128,
+        255
+       ]
+      },
+      {
+       "name": "byte_sequence:eSInt8Usi",
+       "values": []
+      },
+      {
+       "name": "short_sequence:eInt8Usi",
+       "values": [
+        0,
+        127,
+        128,
+        255
+       ]
+      },
+      {
+       "name": "short_sequence:eSInt8Usi",
+       "values": [
+        0,
+        127,
+        -128,
+        -1
+       ]
+      },
+      {
+       "name": "long_sequence:eUInt8Usi",
+       "values": [
+        0,
+        127,
+        128,
+        255
+       ]
+      },
+      {
+       "name": "double_sequence:eInt8Usi",
+       "values": [
+        0.0,
+        127.0,
+        128.0,
+        255.0
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p02_ints.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "short_sequence:eInt16Usi",
+       "values": [
+        0,
+        1,
+        -32768,
+        -1
+       ]
+      },
+      {
+       "name": "short_sequence:eUInt16Usi",
+       "values": [
+        null,
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "name": "long_sequence:eUInt16Usi",
+       "values": [
+        0,
+        1,
+        32768,
+        65535
+       ]
+      },
+      {
+       "name": "double_sequence:eUInt16Usi",
+       "values": [
+        0.0,
+        1.0,
+        32768.0,
+        65535.0
+       ]
+      },
+      {
+       "name": "long_sequence:eInt32Usi",
+       "values": [
+        0,
+        1,
+        -2147483648,
+        -1
+       ]
+      },
+      {
+       "name": "long_sequence:eUInt32Usi",
+       "values": [
+        null,
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "name": "double_sequence:eUInt32Usi",
+       "values": [
+        0.0,
+        1.0,
+        2147483648.0,
+        4294967295.0
+       ]
+      },
+      {
+       "name": "double_sequence:eInt64Usi",
+       "values": [
+        0.0,
+        1.0,
+        -9.223372036854776e+18,
+        -1.0
+       ]
+      },
+      {
+       "name": "double_sequence:eUInt64Usi",
+       "values": [
+        0.0,
+        1.0,
+        9.223372036854776e+18,
+        1.8446744073709552e+19
+       ]
+      },
+      {
+       "name": "float_sequence:eFloat32Usi",
+       "values": [
+        0.5,
+        -1.25,
+        null,
+        3.0
+       ]
+      },
+      {
+       "name": "double_sequence:eFloat32Usi",
+       "values": [
+        0.5,
+        -1.25,
+        null,
+        3.0
+       ]
+      },
+      {
+       "name": "float_sequence:eFloat64Usi",
+       "values": [
+        0.5,
+        -1.25,
+        null,
+        0.10000000149011612
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "short_sequence:eInt16Usi",
+       "values": [
+        0,
+        1,
+        -32768,
+        -1
+       ]
+      },
+      {
+       "name": "short_sequence:eUInt16Usi",
+       "values": []
+      },
+      {
+       "name": "long_sequence:eUInt16Usi",
+       "values": [
+        0,
+        1,
+        32768,
+        65535
+       ]
+      },
+      {
+       "name": "double_sequence:eUInt16Usi",
+       "values": [
+        0.0,
+        1.0,
+        32768.0,
+        65535.0
+       ]
+      },
+      {
+       "name": "long_sequence:eInt32Usi",
+       "values": [
+        0,
+        1,
+        -2147483648,
+        -1
+       ]
+      },
+      {
+       "name": "long_sequence:eUInt32Usi",
+       "values": []
+      },
+      {
+       "name": "double_sequence:eUInt32Usi",
+       "values": [
+        0.0,
+        1.0,
+        2147483648.0,
+        4294967295.0
+       ]
+      },
+      {
+       "name": "double_sequence:eInt64Usi",
+       "values": [
+        0.0,
+        1.0,
+        -9.223372036854776e+18,
+        -1.0
+       ]
+      },
+      {
+       "name": "double_sequence:eUInt64Usi",
+       "values": [
+        0.0,
+        1.0,
+        9.223372036854776e+18,
+        1.8446744073709552e+19
+       ]
+      },
+      {
+       "name": "float_sequence:eFloat32Usi",
+       "values": [
+        0.5,
+        -1.25,
+        "inf",
+        3.0
+       ]
+      },
+      {
+       "name": "double_sequence:eFloat32Usi",
+       "values": [
+        0.5,
+        -1.25,
+        "inf",
+        3.0
+       ]
+      },
+      {
+       "name": "float_sequence:eFloat64Usi",
+       "values": [
+        0.5,
+        -1.25,
+        "inf",
+        0.10000000149011612
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p03_inline_00.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "byte_sequence#0",
+       "values": [
+        0,
+        127,
+        255
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "byte_sequence#0",
+       "values": [
+        0,
+        127,
+        255
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p03_inline_01.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "short_sequence#1",
+       "values": [
+        -5,
+        0,
+        32767
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "short_sequence#1",
+       "values": [
+        -5,
+        0,
+        32767
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p03_inline_02.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "long_sequence#2",
+       "values": [
+        -7,
+        2147483647,
+        0
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "long_sequence#2",
+       "values": [
+        -7,
+        2147483647,
+        0
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p03_inline_03.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "double_sequence#3",
+       "values": [
+        -9.223372036854776e+18,
+        1.0,
+        9007199254740992.0
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "double_sequence#3",
+       "values": [
+        -9.223372036854776e+18,
+        1.0,
+        9007199254740992.0
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p03_inline_04.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "float_sequence#4",
+       "values": [
+        0.5,
+        -1.25,
+        10000000000.0
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "float_sequence#4",
+       "values": [
+        0.5,
+        -1.25,
+        10000000000.0
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p03_inline_05.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "double_sequence#5",
+       "values": [
+        0.1,
+        -0.0025,
+        null
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "double_sequence#5",
+       "values": [
+        0.1,
+        -0.0025,
+        "inf"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p03_inline_06.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "double_sequence#6",
+       "values": [
+        1.0,
+        2.0,
+        3.0
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "double_sequence#6",
+       "values": [
+        1.0,
+        2.0,
+        3.0
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p03_inline_07.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "string_sequence#7",
+       "values": [
+        "a",
+        "",
+        " b "
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "string_sequence#7",
+       "values": [
+        "a",
+        "",
+        " b "
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p03_inline_08.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "time_sequence#8",
+       "values": [
+        "2026-10-14T12:00:00.000000",
+        "9999-09-09T09:09:09.000000",
+        null
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "time_sequence#8",
+       "values": [
+        "2026-10-14T10:00:00"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p03_inline_09.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "double_sequence#9",
+       "values": [
+        1.0,
+        2.0,
+        null
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "double_sequence#9",
+       "values": [
+        1.0,
+        2.0
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p03_inline_10.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "double_sequence#10",
+       "values": [
+        1.0,
+        2.0,
+        3.0
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "double_sequence#10",
+       "values": [
+        1.0,
+        2.0,
+        3.0,
+        4.0
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p03_inline_11.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "double_sequence#11",
+       "values": [
+        1.0,
+        2.0,
+        3.0
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "double_sequence#11",
+       "values": [
+        1.0,
+        2.0,
+        3.0
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p03_inline_12.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "string_sequence#12",
+       "values": [
+        "a",
+        "b",
+        null
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "string_sequence#12",
+       "values": [
+        "a",
+        "b"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p03_inline_13.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "long_sequence#13",
+       "values": [
+        1,
+        2,
+        3
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "long_sequence#13",
+       "values": [
+        1,
+        2,
+        3
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p03_inline_14.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "double_sequence#14",
+       "values": [
+        null,
+        null,
+        null
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "double_sequence#14",
+       "values": [
+        "nan",
+        "-inf",
+        "inf"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p04_bigendian.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "i16",
+       "values": [
+        -2
+       ]
+      },
+      {
+       "name": "i32",
+       "values": [
+        70000
+       ]
+      },
+      {
+       "name": "f64",
+       "values": [
+        0.25
+       ]
+      },
+      {
+       "name": "f32",
+       "values": [
+        1.5
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "i16",
+       "values": [
+        -2
+       ]
+      },
+      {
+       "name": "i32",
+       "values": [
+        70000
+       ]
+      },
+      {
+       "name": "f64",
+       "values": [
+        0.25
+       ]
+      },
+      {
+       "name": "f32",
+       "values": [
+        1.5
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p05_time.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "t",
+       "values": [
+        "2026-10-14T17:34:39.500000",
+        "1904-01-01T00:00:00.000000",
+        "1903-12-31T00:00:00.000000",
+        "1904-01-01T00:00:00.000000"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "t",
+       "values": [
+        "2026-10-14T15:34:39.500000",
+        "1903-12-31T23:00:00",
+        "1903-12-30T23:00:00",
+        "1903-12-31T23:00:00"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p05_time_be.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "t",
+       "values": [
+        "2026-10-14T17:34:39.500000",
+        "1904-01-01T00:00:00.000000",
+        "1903-12-31T00:00:00.250000"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "t",
+       "values": [
+        "2026-10-14T15:34:39.500000",
+        "1903-12-31T23:00:00",
+        "1903-12-30T23:00:00.250000"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p06_rows.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "rows3_len6",
+       "values": [
+        1.0,
+        2.0,
+        3.0
+       ]
+      },
+      {
+       "name": "rows8_len6",
+       "values": [
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0,
+        null,
+        null
+       ]
+      },
+      {
+       "name": "norows_len6",
+       "values": []
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "rows3_len6",
+       "values": [
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0
+       ]
+      },
+      {
+       "name": "rows8_len6",
+       "values": [
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0
+       ]
+      },
+      {
+       "name": "norows_len6",
+       "values": [
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p07_a_lin_with_values.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "a_lin_with_values",
+       "values": [
+        9.0,
+        9.0
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "a_lin_with_values",
+       "values": [
+        -0.5,
+        0.7,
+        1.9,
+        3.0999999999999996,
+        4.3
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p07_b_lin_no_values.tdm": {
+  "datastore": {
+   "error": "NI's DataStore reader stopped with exit code 3221225477"
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "b_lin_no_values",
+       "values": [
+        10.0,
+        12.0,
+        14.0,
+        16.0
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p07_c_constant.tdm": {
+  "datastore": {
+   "error": "NI's DataStore reader stopped with exit code 3221225477"
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "c_constant",
+       "values": [
+        7.5,
+        7.5,
+        7.5
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p07_d_raw_linear_1_05.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "d_raw_linear_1_05",
+       "values": [
+        0,
+        2,
+        4
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "d_raw_linear_1_05",
+       "values": [
+        1.0,
+        2.0,
+        3.0
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p07_e_raw_linear_3_2.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "e_raw_linear_3_2",
+       "values": [
+        0,
+        2,
+        4
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "e_raw_linear_3_2",
+       "values": [
+        3.0,
+        7.0,
+        11.0
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p07_f_raw_linear_external.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "f_raw_linear_external",
+       "values": []
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "f_raw_linear_external",
+       "values": [
+        3.0,
+        7.0,
+        11.0
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p07_g_saw.tdm": {
+  "datastore": {
+   "error": "NI's DataStore reader stopped with exit code 3221225477"
+  },
+  "channel": {
+   "error": "LabVIEW error -2500"
+  }
+ },
+ "p07_h_raw_poly.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "h_raw_poly",
+       "values": [
+        0,
+        2,
+        4
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "error": "LabVIEW error -2500"
+  }
+ },
+ "p07_i_implicit_alias.tdm": {
+  "datastore": {
+   "error": "NI's DataStore reader stopped with exit code 3221225477"
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "i_implicit_alias",
+       "values": []
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p07_j_lin_one_param.tdm": {
+  "datastore": {
+   "error": "NI's DataStore reader stopped with exit code 3221225477"
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "j_lin_one_param",
+       "values": [
+        5.0,
+        5.0,
+        5.0
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p07_k_lin_no_param.tdm": {
+  "datastore": {
+   "error": "NI's DataStore reader stopped with exit code 3221225477"
+  },
+  "channel": {
+   "error": "LabVIEW error -2500"
+  }
+ },
+ "p07_l_lin_long.tdm": {
+  "datastore": {
+   "error": "NI's DataStore reader stopped with exit code 3221225477"
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "l_lin_long",
+       "values": [
+        10.0,
+        12.0,
+        14.0,
+        16.0
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p07_m_lin_three_params.tdm": {
+  "datastore": {
+   "error": "NI's DataStore reader stopped with exit code 3221225477"
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "m_lin_three_params",
+       "values": [
+        10.0,
+        12.0,
+        14.0
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p07_n_no_repr.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "n_no_repr",
+       "values": [
+        9.0,
+        9.0,
+        9.0,
+        9.0,
+        9.0
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "n_no_repr",
+       "values": []
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p07_o_const_no_values_long.tdm": {
+  "datastore": {
+   "error": "NI's DataStore reader stopped with exit code 3221225477"
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "o_const_no_values_long",
+       "values": [
+        7.5,
+        7.5,
+        7.5
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p07_p_raw_linear_double.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "p_raw_linear_double",
+       "values": [
+        9.0,
+        9.0,
+        9.0,
+        9.0,
+        9.0
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "p_raw_linear_double",
+       "values": [
+        21.0,
+        21.0,
+        21.0,
+        21.0,
+        21.0
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p08_blk_blockoffset.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "A",
+       "values": [
+        1.5,
+        5e-323,
+        4.29705442834e-313
+       ]
+      },
+      {
+       "name": "B",
+       "values": [
+        10,
+        0,
+        1074003968
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "A",
+       "values": [
+        1.5,
+        5e-323,
+        4.29705442834e-313
+       ]
+      },
+      {
+       "name": "B",
+       "values": [
+        10,
+        0,
+        1074003968
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p08_blk_blocksize.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "A",
+       "values": [
+        1.5,
+        5e-323,
+        4.29705442834e-313
+       ]
+      },
+      {
+       "name": "B",
+       "values": [
+        10,
+        0,
+        1074003968
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "A",
+       "values": [
+        1.5,
+        5e-323,
+        4.29705442834e-313
+       ]
+      },
+      {
+       "name": "B",
+       "values": [
+        10,
+        0,
+        1074003968
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p08_bm_a_12_8.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "A",
+       "values": [
+        2.5,
+        1e-322,
+        6.41907612257e-313
+       ]
+      },
+      {
+       "name": "B",
+       "values": [
+        20,
+        0,
+        1074528256
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "A",
+       "values": [
+        2.5,
+        1e-322,
+        6.41907612257e-313
+       ]
+      },
+      {
+       "name": "B",
+       "values": [
+        20,
+        0,
+        1074528256
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p08_bm_b_8_12.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "A",
+       "values": [
+        5e-323,
+        1e-322,
+        null
+       ]
+      },
+      {
+       "name": "B",
+       "values": [
+        0,
+        0,
+        null
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "A",
+       "values": []
+      },
+      {
+       "name": "B",
+       "values": []
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p08_bm_c_0_12.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "A",
+       "values": [
+        1.5,
+        2.5,
+        3.5
+       ]
+      },
+      {
+       "name": "B",
+       "values": [
+        10,
+        20,
+        30
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "A",
+       "values": [
+        1.5,
+        2.5,
+        3.5
+       ]
+      },
+      {
+       "name": "B",
+       "values": [
+        10,
+        20,
+        30
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p08_mr_a.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "A",
+       "values": [
+        1.5,
+        5e-323,
+        2.5
+       ]
+      },
+      {
+       "name": "B",
+       "values": [
+        1074003968,
+        20,
+        1074528256
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "A",
+       "values": [
+        1.5,
+        1.691185149809567e-306,
+        2.5
+       ]
+      },
+      {
+       "name": "B",
+       "values": [
+        1074003968,
+        20,
+        1074528256
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p09_strext_0.tdm": {
+  "datastore": {
+   "error": "NI could not open the file"
+  },
+  "channel": {
+   "error": "LabVIEW error -2558"
+  }
+ },
+ "p09_strext_1.tdm": {
+  "datastore": {
+   "error": "NI could not open the file"
+  },
+  "channel": {
+   "error": "LabVIEW error -2558"
+  }
+ },
+ "p09_strext_2.tdm": {
+  "datastore": {
+   "error": "NI could not open the file"
+  },
+  "channel": {
+   "error": "LabVIEW error -2558"
+  }
+ },
+ "p10_implen_0.tdm": {
+  "datastore": {
+   "error": "NI's DataStore reader stopped with exit code 3221225477"
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "x",
+       "values": [
+        0.0,
+        1.0,
+        2.0,
+        3.0
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p10_implen_1.tdm": {
+  "datastore": {
+   "error": "NI's DataStore reader stopped with exit code 3221225477"
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "x",
+       "values": [
+        0.0,
+        1.0,
+        2.0,
+        3.0
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p10_implen_2.tdm": {
+  "datastore": {
+   "error": "NI's DataStore reader stopped with exit code 3221225477"
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "x",
+       "values": []
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p11_overlap.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "A",
+       "values": [
+        1.5,
+        5e-323,
+        null
+       ]
+      },
+      {
+       "name": "A2",
+       "values": [
+        2.17501978247e-313,
+        2.5,
+        null
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "A",
+       "values": [
+        1.5,
+        5e-323
+       ]
+      },
+      {
+       "name": "A2",
+       "values": [
+        2.17501978247e-313,
+        2.5
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p11_past_end.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "A",
+       "values": [
+        1e-322,
+        6.41907612257e-313,
+        null
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "A",
+       "values": []
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p12_inline_time.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "t",
+       "values": [
+        "2026-10-14T12:00:00.123456",
+        "1999-12-31T23:59:59.000000"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "t",
+       "values": [
+        "2026-10-14T10:00:00.123456",
+        "1999-12-31T22:59:59"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p13_linear_negative.tdm": {
+  "datastore": {
+   "error": "NI's DataStore reader stopped with exit code 3221225477"
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "x",
+       "values": [
+        1000.0,
+        999.75,
+        999.5,
+        999.25,
+        999.0
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p14_raw_int32.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "x",
+       "values": [
+        -10,
+        0,
+        7
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "x",
+       "values": [
+        -4.0,
+        -1.5,
+        0.25
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p15_no_byteorder.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "x",
+       "values": [
+        -10,
+        0,
+        7
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "x",
+       "values": [
+        -10,
+        0,
+        7
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "p16_float32_in_float.tdm": {
+  "datastore": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "x",
+       "values": [
+        0.10000000149011612,
+        16777216.0
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "groups": [
+    {
+     "name": "G",
+     "channels": [
+      {
+       "name": "x",
+       "values": [
+        0.10000000149011612,
+        16777216.0
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

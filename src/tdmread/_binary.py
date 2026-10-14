@@ -34,16 +34,14 @@ Decoded = tuple[float, ...] | tuple[datetime, ...]
 
 
 class Layout(NamedTuple):
-    """Where a block's values sit in the .tdx.
+    """Where a block's values sit in the .tdx: value ``i`` starts at ``start + i * stride``.
 
-    Value ``j`` starts at ``start + (j // per_scan) * stride + (j % per_scan) * item``.
-    A plain ``block`` is contiguous; ``block_bm`` and ``block_mr`` interleave channels.
+    A plain ``block`` is contiguous (`stride` None); a ``block_bm`` interleaves channels.
     """
 
     start: int
     length: int
     stride: int | None = None
-    per_scan: int = 1
 
 
 def byte_order_prefix(byte_order: str) -> str:
@@ -83,10 +81,8 @@ def span(layout: Layout, size: int) -> tuple[int, int]:
     """Return the (first byte, end byte) range that `layout` reads, items of `size`."""
     if layout.length == 0:
         return layout.start, layout.start
-    last = layout.length - 1
-    stride = layout.stride if layout.stride is not None else size * layout.per_scan
-    end = layout.start + (last // layout.per_scan) * stride + (last % layout.per_scan) * size
-    return layout.start, end + size
+    stride = layout.stride if layout.stride is not None else size
+    return layout.start, layout.start + (layout.length - 1) * stride + size
 
 
 def decode(raw: bytes, layout: Layout, value_type: str, prefix: str) -> Decoded:
@@ -101,6 +97,5 @@ def decode(raw: bytes, layout: Layout, value_type: str, prefix: str) -> Decoded:
 
 
 def _gather(raw: bytes, layout: Layout, size: int) -> bytes:
-    stride, per_scan = layout.stride or 0, layout.per_scan
-    starts = ((j // per_scan) * stride + (j % per_scan) * size for j in range(layout.length))
-    return b"".join(raw[at : at + size] for at in starts)
+    stride = layout.stride or size
+    return b"".join(raw[i * stride : i * stride + size] for i in range(layout.length))

@@ -52,19 +52,23 @@ def read_values(
 
 
 def block_layout(block: ET.Element, size: int) -> Layout:
-    """Describe where the values of a ``block``, ``block_bm`` or ``block_mr`` element sit."""
+    """Describe where the values of a ``block`` or ``block_bm`` element sit.
+
+    NI's reader ignores blockSize and blockOffset on a plain ``block``. A ``block_bm``
+    holds value ``i`` at ``byteOffset + blockOffset + i * blockSize``. ``block_mr`` is
+    refused: NI's own two readers disagreed on it when probed.
+    """
     kind = local_name(block)
     start = count_attribute(block, "byteOffset", 0)
     length = count_attribute(block, "length", 0)
     if kind == "block":
-        # NI's reader ignores blockSize and blockOffset on a plain block.
         return Layout(start, length)
+    if kind != "block_bm":
+        raise UnsupportedTdmError(f"unsupported .tdx block layout {quote(kind)}")
     start += count_attribute(block, "blockOffset", 0)
     stride = count_attribute(block, "blockSize")
-    per_scan = count_attribute(block, "valuesPerScan", 1) if kind == "block_mr" else 1
-    if per_scan < 1 or stride < per_scan * size:
+    if stride < size:
         raise UnsupportedTdmError(
-            f"interleaved block with blockSize {stride} cannot hold {per_scan} value(s) "
-            f"of {size} bytes per scan"
+            f"block_bm with blockSize {stride} cannot hold a {size}-byte value per scan"
         )
-    return Layout(start, length, stride, per_scan)
+    return Layout(start, length, stride)
