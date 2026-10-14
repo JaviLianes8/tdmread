@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 
 from ._channel import Values
 from ._errors import UnsupportedTdmError, quote
-from ._numbers import as_byte, as_single, parse_float, parse_integer
+from ._numbers import NARROW, as_single, parse_float, parse_integer
 from ._times import parse_iso
 from ._xml import local_name
 
@@ -35,9 +35,11 @@ def inline_values(sequence: ET.Element, values: ET.Element) -> Values:
     if kind == "string_sequence":
         return tuple(item.text or "" for item in values if local_name(item) == "s")
     tokens = (values.text or "").split()
-    # As NI's reader does, inline bytes are unsigned and inline floats are 32-bit.
-    if kind == "byte_sequence":
-        return tuple(as_byte(parse_integer(token)) for token in tokens)
+    # As NI's reader does, inline bytes are unsigned, shorts wrap to 16 bits, longs clamp
+    # to 32 bits and floats are 32-bit.
+    narrow = NARROW.get(kind.removesuffix("_sequence"))
+    if narrow is not None:
+        return tuple(narrow(parse_integer(token)) for token in tokens)
     if kind in _INTEGER_SEQUENCES:
         return tuple(parse_integer(token) for token in tokens)
     if kind == "float_sequence":

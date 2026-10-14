@@ -36,12 +36,12 @@ def test_nis_example_fraction_reads_as_the_next_microsecond(tmp_path: Path) -> N
     )
 
 
-def test_header_times_round_on_the_tenth_digit(tmp_path: Path) -> None:
+def test_header_times_round_like_nis_reader_and_never_cross_the_second(tmp_path: Path) -> None:
     text = "2026-10-14T12:11:12.345677999999999985281 2026-10-14T12:11:12.9999999995"
     data = read_tdm(Dataset([inline(0, "time_sequence", text)]).write(tmp_path)).groups[0]
     assert data.channels[0].data == (
         datetime(2026, 10, 14, 12, 11, 12, 345678),
-        datetime(2026, 10, 14, 12, 11, 13),
+        datetime(2026, 10, 14, 12, 11, 12, 999999),
     )
 
 

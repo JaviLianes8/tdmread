@@ -52,8 +52,8 @@ def test_integers_may_carry_a_plus_sign(tmp_path: Path) -> None:
 
 @pytest.mark.parametrize("kind", INTS)
 def test_every_inline_integer_sequence_is_read(tmp_path: Path, kind: str) -> None:
-    # NI reads inline bytes unsigned, modulo 256 (2**64 - 1 is 255 there).
-    big = 255 if kind == "byte" else 18446744073709551615
+    # NI reads inline bytes modulo 256, shorts wrapped to 16 bits, longs clamped to 32.
+    big = {"byte": 255, "short": -1, "long": 2147483647}.get(kind, 18446744073709551615)
     assert _one(tmp_path, inline(0, f"{kind}_sequence", "7 18446744073709551615")) == (7, big)
 
 

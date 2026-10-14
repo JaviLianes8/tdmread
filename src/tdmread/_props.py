@@ -7,7 +7,7 @@ from collections.abc import Iterator, Mapping
 from datetime import datetime
 
 from ._errors import TdmError
-from ._numbers import as_byte, as_single, is_float, parse_integer
+from ._numbers import NARROW, as_single, is_float, parse_integer
 from ._times import parse_iso
 from ._xml import child, local_name
 
@@ -63,12 +63,12 @@ def _value(kind: str, attr: ET.Element) -> PropertyValue:
     if kind == "string":
         parts = [item.text or "" for item in attr if local_name(item) == "s"]
         # NI's reader keeps only the first part of a string with several.
-        return parts[0] if parts else (attr.text or "").strip()
+        return parts[0] if parts else ""
     text = (attr.text or "").strip()
     # A value that does not parse as its declared kind is kept as the raw text.
     try:
-        if kind == "byte":
-            return as_byte(parse_integer(text))
+        if kind in NARROW:
+            return NARROW[kind](parse_integer(text))
         if kind in _INTEGER_KINDS:
             return parse_integer(text)
         if kind == "time":

@@ -64,3 +64,24 @@ def as_single(value: float) -> float:
     except OverflowError:
         return math.copysign(math.inf, value)
     return single
+
+
+def as_short(value: int) -> int:
+    """Read an integer as NI reads a ``short``: wrapped to 16 bits.
+
+    >>> as_short(32768), as_short(65535)
+    (-32768, -1)
+    """
+    return (value + 32768) % 65536 - 32768
+
+
+def as_long(value: int) -> int:
+    """Read an integer as NI reads a ``long``: clamped to 32 bits.
+
+    >>> as_long(2**31), as_long(-(2**31) - 1)
+    (2147483647, -2147483648)
+    """
+    return max(-(2**31), min(2**31 - 1, value))
+
+
+NARROW = {"byte": as_byte, "short": as_short, "long": as_long}

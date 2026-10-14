@@ -3,8 +3,9 @@
 TDM stores times as local wall-clock time without a zone. In the .tdx a time is 16 bytes,
 an unsigned 64-bit fraction of a second (units of 2**-64 s) followed by signed 64-bit whole
 seconds since 1904-01-01 00:00. In the .tdm XML it is ISO text with any number of
-fractional digits. As NI's reader does, both are rounded to the nearest nanosecond and
-then cut to whole microseconds (``datetime`` holds no finer unit).
+fractional digits. As NI's reader does, both are rounded to the nearest nanosecond (never
+past the end of their second) and then cut to whole microseconds (``datetime`` holds no
+finer unit).
 """
 
 from __future__ import annotations
@@ -29,20 +30,15 @@ _ISO = re.compile(
 def from_timestamp(seconds: int, fraction: int) -> datetime:
     """Return the time `seconds` + `fraction` / 2**64 after 1904-01-01.
 
-    The fraction is rounded to the nearest nanosecond, then cut to microseconds.
+    As NI's reader does, the fraction is rounded to the nearest nanosecond (never past
+    the end of its second) and then cut to microseconds.
 
     >>> from_timestamp(3_874_844_079, 2**63)
     datetime.datetime(2026, 10, 14, 17, 34, 39, 500000)
     >>> from_timestamp(3_850_074_000, 0x0126E978D4FDF3B0)
     datetime.datetime(2026, 1, 1, 1, 0, 0, 4500)
     """
-    nanos = (fraction * _NANO + 2**63) >> 64
-    return _at(seconds, nanos)
-
-
-def _at(seconds: int, nanos: int) -> datetime:
-    if nanos >= _NANO:
-        seconds, nanos = seconds + 1, nanos - _NANO
+    nanos = min((fraction * _NANO + 2**63) >> 64, _NANO - 1)
     if not _MIN_SECONDS <= seconds <= _MAX_SECONDS:
         raise TdmError(f"time value {seconds} s from 1904 is outside the years 1 to 9999")
     return EPOCH + timedelta(seconds=seconds, microseconds=nanos // 1000)
@@ -68,10 +64,11 @@ def parse_iso(text: str) -> datetime:
     if match is None:
         raise TdmError(f"invalid time {quote(text)}")
     year, month, day, hour, minute, second = (int(part) for part in match.groups()[:6])
-    digits = match.group(7) or ""
-    nanos = int(digits[:9].ljust(9, "0")) + (1 if digits[9:10] >= "5" else 0)
+    # NI turns the digits into a 2**-64 fraction (cut) and rounds that like a .tdx time.
+    digits = (match.group(7) or "0")[:40]
+    fraction = int(digits) * 2**64 // 10 ** len(digits)
     try:
         whole = datetime(year, month, day, hour, minute, second)
     except ValueError:
         raise TdmError(f"invalid time {quote(text)}") from None
-    return _at(int((whole - EPOCH) // timedelta(seconds=1)), nanos)
+    return from_timestamp((whole - EPOCH) // _SECOND, fraction)
