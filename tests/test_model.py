@@ -96,14 +96,15 @@ def test_typed_accessors_return_the_data_or_refuse_another_kind() -> None:
         Channel("b", "", "", "", (True,)).numbers()
 
 
-def test_to_numpy_without_numpy_explains_how_to_install_it(
-    monkeypatch: pytest.MonkeyPatch,
+@pytest.mark.parametrize("error", [ModuleNotFoundError, ImportError])
+def test_to_numpy_without_a_working_numpy_explains_how_to_install_it(
+    monkeypatch: pytest.MonkeyPatch, error: type[ImportError]
 ) -> None:
     real_import = builtins.__import__
 
     def no_numpy(name: str, *args: object, **kwargs: object) -> object:
         if name == "numpy":
-            raise ModuleNotFoundError("No module named 'numpy'")
+            raise error("numpy cannot be loaded here")
         return real_import(name, *args, **kwargs)  # type: ignore[arg-type]
 
     monkeypatch.setattr(builtins, "__import__", no_numpy)

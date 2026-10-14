@@ -105,7 +105,7 @@ class Channel:
         """Return the values as a NumPy array (``Any``: NumPy is an optional extra).
 
         The core library never imports NumPy; this raises :class:`TdmError` with an
-        install hint when it is missing.
+        install hint when NumPy is missing or cannot be imported.
 
         >>> from tdmread import Channel, TdmError
         >>> channel = Channel("n", "", "", "eInt32Usi", (1, 2, 3))
@@ -117,8 +117,8 @@ class Channel:
         """
         try:
             import numpy as np
-        except ModuleNotFoundError as exc:
+        except ImportError as exc:
             raise TdmError(
-                "NumPy is not installed; run 'pip install numpy' to use Channel.to_numpy()"
+                "NumPy could not be imported; run 'pip install numpy' to use Channel.to_numpy()"
             ) from exc
         return np.asarray(self.data)
