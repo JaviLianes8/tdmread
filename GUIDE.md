@@ -151,7 +151,8 @@ as its declared kind is kept as the raw text. When a name repeats, the first one
 Other `OSError`s (for example a permission error) propagate unchanged. Messages quote at
 most 40 characters of any text taken from a file. The command line prints errors as
 `tdmread: error: ...` (cut to 300 characters) and exits with 1; usage errors exit with 2,
-an interrupt with 130, and a closed output pipe ends the command quietly with 1.
+an interrupt with 130. When the reader of its output or errors goes away, the command
+ends quietly: with 1 if it noticed the lost output, otherwise with its usual code.
 
 ## Limits
 

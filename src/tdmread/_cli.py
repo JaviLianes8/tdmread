@@ -85,6 +85,9 @@ def _settle(stream: TextIO | None) -> None:
 
 
 def _silence(stream: TextIO | None) -> None:
+    # Only the process's own standard streams are redirected, never a caller's stream.
+    if stream is None or stream not in (sys.__stdout__, sys.__stderr__):
+        return
     try:
         devnull = os.open(os.devnull, os.O_WRONLY)
         os.dup2(devnull, stream.fileno())  # type: ignore[union-attr]
