@@ -86,7 +86,7 @@ def test_names_no_file_can_have_are_refused(tmp_path: Path, url: str) -> None:
     header = dataset.write(tmp_path)
     text = header.read_text(encoding="utf-8").replace('url="data.tdx"', f'url="{url}"')
     header.write_text(text, encoding="utf-8")
-    with pytest.raises(TdmError, match="outside the header's folder"):
+    with pytest.raises(TdmError, match=r"the .tdx location"):
         read_tdm(header)
 
 

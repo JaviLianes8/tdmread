@@ -26,14 +26,13 @@ def locate(header: Path, url: str | None, override: StrPath | None) -> Path:
     if not url:
         raise TdmError("the .tdm header does not name its .tdx file")
     posix, windows = PurePosixPath(url), PureWindowsPath(url)
+    if ":" in url or posix.is_absolute() or windows.is_absolute() or ".." in windows.parts:
+        raise TdmError(f"the .tdx location {quote(url)} is outside the header's folder")
     if (
         any(ord(char) < 32 or char in _FORBIDDEN for char in url)
         or url.replace("\\", "/").rsplit("/", 1)[-1].strip(" .") == ""
-        or posix.is_absolute()
-        or windows.is_absolute()
-        or ".." in windows.parts
     ):
-        raise TdmError(f"the .tdx location {quote(url)} is outside the header's folder")
+        raise TdmError(f"the .tdx location {quote(url)} is not a valid file name")
     return header.parent / Path(*windows.parts)
 
 
@@ -87,9 +86,8 @@ class TdxSource:
             try:
                 self._handle = open(self._path, "rb")  # noqa: SIM115 - closed by __exit__
             except FileNotFoundError:
-                raise TdmFileNotFoundError(
-                    f"TDX data not found: {quote(str(self._path))}"
-                ) from None
+                name = quote(self._path.name)
+                raise TdmFileNotFoundError(f"TDX data not found: {name}") from None
             except PermissionError:
                 raise
             except ValueError:

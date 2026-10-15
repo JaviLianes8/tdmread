@@ -24,7 +24,7 @@ _DTD_MARKS = ("<!DOCTYPE", "<!ENTITY")
 def read_tdm(tdm_path: StrPath, tdx_path: StrPath | None = None) -> TdmFile:
     """Read the TDM dataset whose XML header is `tdm_path`.
 
-    The .tdx data file is the one the header names, in the header's folder; pass
+    The .tdx data file is the one the header names, in the header's folder or below it; pass
     `tdx_path` to read another one. The .tdx is opened only if a channel stores values
     in it, so a header whose values are all inline or generated needs none.
 

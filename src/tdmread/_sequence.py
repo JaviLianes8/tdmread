@@ -125,7 +125,9 @@ def _parameters(column: ET.Element, needed: int, representation: str) -> tuple[f
 
 def _length(rows: str) -> int:
     if not rows:
-        raise TdmError("a generated channel has no row count (submatrix number_of_rows)")
+        raise TdmError(
+            "a generated channel has no row count (submatrix number_of_rows or NI_ChannelLength)"
+        )
     count = parse_int(rows, "row count")
     if count < 0:
         raise TdmError(f"a generated channel has a negative row count: {count}")

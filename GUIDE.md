@@ -22,7 +22,7 @@ by a test; the rules about NI's behaviour were checked on LabVIEW 2026 (see "Gro
   dataset, however many times the header refers to it; channels that share them share the
   same tuple. A generated column shared by several channels is generated for each, since
   its length comes from the channel.
-- Paths may be `str` or any `os.PathLike`.
+- Paths may be `str` or any `os.PathLike[str]` such as `pathlib.Path`.
 
 ## The result
 
@@ -255,7 +255,8 @@ Changes that can alter what a 0.2.1 call returned or raised:
   `0, 1, 2, ...`); `implicit` is refused (0.2.1 treated it as `implicit_linear`).
 - A reference to a missing sequence or block raises `TdmError` (0.2.1 returned an empty
   channel); a header whose root is not `<tdm>`, or with a DTD, raises `TdmError`; malformed
-  XML raises `TdmError` instead of `xml.etree.ElementTree.ParseError`.
+  XML raises `TdmError` instead of `xml.etree.ElementTree.ParseError`, and an unknown
+  text encoding raises `TdmError` instead of `LookupError`.
 - A `.tdx` location outside the header's folder is refused; a `.tdx` name the system
   cannot open raises `TdmError` (0.2.1 raised a plain `OSError`).
 - A `block_bm` layout is read, and raises `TdmError` when it runs past the end of the
@@ -265,7 +266,8 @@ Changes that can alter what a 0.2.1 call returned or raised:
   them, however large).
 - A missing `.tdx` that no channel needs is no longer an error (0.2.1 raised
   `TdmFileNotFoundError` whenever the header listed blocks).
-- A block attribute that is not an integer raises `TdmError` (0.2.1 raised `ValueError`).
+- A block attribute that is not an integer or is negative raises `TdmError` (0.2.1 raised
+  `ValueError` or `struct.error`).
 - When two elements share an id, the first one is used (0.2.1 used the last).
 - `Channel.to_list()` is typed `list[float] | list[str] | list[datetime]`.
 - `tdmread dump`: JSON writes non-finite floats as the strings `"inf"`, `"-inf"` and

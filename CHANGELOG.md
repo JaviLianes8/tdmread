@@ -6,7 +6,7 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
-## [1.0.0] - 2026-10-14
+## [1.0.0] - 2026-10-15
 
 The public API is now stable: `read_tdm`, `TdmFile`, `Group`, `Channel`, `FileMetadata`,
 `supported_value_types`, `TdmError`, `TdmFileNotFoundError` and `UnsupportedTdmError`, and
