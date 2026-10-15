@@ -93,9 +93,12 @@ def _silence(stream: TextIO | None) -> None:
     if stream is None or stream not in (sys.__stdout__, sys.__stderr__):
         return
     try:
+        target = stream.fileno()  # type: ignore[union-attr]
         devnull = os.open(os.devnull, os.O_WRONLY)
-        os.dup2(devnull, stream.fileno())  # type: ignore[union-attr]
-        os.close(devnull)
+        # A closed descriptor is reused by os.open itself; then it already is the null device.
+        if devnull != target:
+            os.dup2(devnull, target)
+            os.close(devnull)
     except (OSError, ValueError, AttributeError):
         pass
 

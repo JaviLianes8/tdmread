@@ -50,3 +50,20 @@ def test_exit_codes_hold_when_the_readers_are_gone(
     args: list[str], expected: int, close_stderr: bool
 ) -> None:
     assert _closed(args, close_stderr) == expected
+
+
+@pytest.mark.parametrize(
+    ("args", "expected"), [(["--version"], 0), (["info", EVENT], 1), (["bogus"], 2)]
+)
+def test_exit_codes_hold_with_both_descriptors_closed_inside_the_process(
+    args: list[str], expected: int
+) -> None:
+    env = dict(os.environ)
+    if (REPO / "src").is_dir():
+        env["PYTHONPATH"] = str(REPO / "src")
+    code = (
+        "import os, runpy, sys; os.close(1); os.close(2); "
+        f"sys.argv = ['tdmread', *{args!r}]; runpy.run_module('tdmread', run_name='__main__')"
+    )
+    done = subprocess.run([sys.executable, "-c", code], env=env, timeout=60)
+    assert done.returncode == expected

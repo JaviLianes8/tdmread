@@ -49,7 +49,7 @@ against NI's own reader; GUIDE.md lists the rules and the few deliberate differe
 - `tdmread dump -f json` writes valid, ASCII-only JSON (non-finite floats as strings, times
   as ISO text) and adds `datatype`; CSV writes times as ISO text and LF line endings; both
   are written as UTF-8 whatever the console encoding. `tdmread channels` shows the `DT_*`
-  type of values written in the header; `info` and `channels` escape unprintable characters
+  type of values written in the header and of generated channels; `info` and `channels` escape unprintable characters
   in names. An interrupt exits with 130, and a closed output pipe or closed standard
   stream ends the command quietly.
 

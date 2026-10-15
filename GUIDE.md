@@ -278,7 +278,8 @@ Changes that can alter what a 0.2.1 call returned or raised:
   and rows end with LF (0.2.1 ended them with CRLF, which showed as blank lines between rows
   on Windows standard output). Both are written as UTF-8 whatever the
   console encoding. `tdmread channels` shows the `DT_*` type of values written in the
-  header (0.2.1 had no such channels), and `info` and `channels` escape unprintable characters
+  header and of generated channels (0.2.1 had no header values and showed
+  `implicit_linear` for generated ones), and `info` and `channels` escape unprintable characters
   in names (a tab shows as `\t`) and characters the console cannot show (0.2.1 stopped with
   `UnicodeEncodeError` there); `dump` always writes UTF-8.
 - New: `properties` on `TdmFile`, `Group` and `Channel`; `Channel.numbers()`, `strings()`
