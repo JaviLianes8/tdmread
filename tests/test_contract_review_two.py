@@ -42,7 +42,7 @@ def test_a_quote_of_exactly_forty_characters_is_not_cut() -> None:
 
 
 def test_exponents_have_at_most_six_digits(tmp_path: Path) -> None:
-    # Guards against GUIDE promises exponents of at most 6 digits.
+    # GUIDE promises exponents of at most 6 digits.
     ok = Dataset([inline(0, "double_sequence", "1e100000 1e-999999")]).write(tmp_path)
     assert read_tdm(ok).group("G").channel("ch0").data == (float("inf"), 0.0)
     bad = Dataset([inline(0, "double_sequence", "1e1000000")]).write(tmp_path, "bad")
