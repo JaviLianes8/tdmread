@@ -52,6 +52,8 @@ packages = ["src/tdmread"]
 include = [
     "src/tdmread",
     "tests",
+    "scripts/fetch_upstream.py",
+    "scripts/make_synthetic_tdm.py",
     "README.md",
     "GUIDE.md",
     "CHANGELOG.md",

@@ -6,7 +6,11 @@ import argparse
 import os
 import sys
 from collections.abc import Sequence
-from typing import TextIO
+from contextlib import suppress
+from typing import TYPE_CHECKING, TextIO
+
+if TYPE_CHECKING:
+    from _typeshed import SupportsWrite
 
 from . import __version__
 from ._cli_output import (
@@ -96,8 +100,15 @@ def _silence(stream: TextIO | None) -> None:
         pass
 
 
+class _Parser(argparse.ArgumentParser):
+    # Python 3.11+ ignores a failed write of help or usage text; 3.10 does not.
+    def _print_message(self, message: str, file: SupportsWrite[str] | None = None) -> None:
+        with suppress(OSError, AttributeError):
+            super()._print_message(message, file)
+
+
 def _build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
+    parser = _Parser(
         prog="tdmread",
         description="Read NI TDM/TDX measurement files (XML .tdm header plus binary .tdx).",
         epilog=_EXAMPLES,
