@@ -257,7 +257,8 @@ Changes that can alter what a 0.2.1 call returned or raised:
   channel); a header whose root is not `<tdm>`, or with a DTD, raises `TdmError`; malformed
   XML raises `TdmError` instead of `xml.etree.ElementTree.ParseError`, and an unknown
   text encoding raises `TdmError` instead of `LookupError`.
-- A `.tdx` location outside the header's folder is refused; a `.tdx` name the system
+- A `.tdx` location outside the header's folder, or that is not a valid file name, is
+  refused; a `.tdx` name the system
   cannot open raises `TdmError` (0.2.1 raised a plain `OSError`).
 - A `block_bm` layout is read, and raises `TdmError` when it runs past the end of the
   `.tdx`; a `block_mr` layout raises `UnsupportedTdmError` (0.2.1 returned empty channels
@@ -277,7 +278,8 @@ Changes that can alter what a 0.2.1 call returned or raised:
   on Windows standard output). Both are written as UTF-8 whatever the
   console encoding. `tdmread channels` shows the `DT_*` type of values written in the
   header (0.2.1 had no such channels), and `info` and `channels` escape unprintable characters
-  in names (a tab shows as `\t`).
+  in names (a tab shows as `\t`) and characters the console cannot show (0.2.1 stopped with
+  `UnicodeEncodeError` there); `dump` always writes UTF-8.
 - New: `properties` on `TdmFile`, `Group` and `Channel`; `Channel.numbers()`, `strings()`
   and `times()`; `eSInt8Usi`, `raw_linear`, `raw_linear_external`, `implicit_constant`
   and `block_bm`.
