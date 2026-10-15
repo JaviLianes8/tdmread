@@ -8,10 +8,35 @@ Progress:
 - [x] Errors, typing, docstrings and doctests (items 2 to 5)
 - [x] Contract, fuzz and author mutation round (items 6, 9, 18)
 - [x] Docs: README, GUIDE, CHANGELOG (items 11, 12)
-- [ ] Packaging, e2e and upgrade from PyPI 0.2.1 (items 8, 10, 13, 14)
-- [ ] Independent reviewer and five QA lenses report PASS (items 16, 19)
-- [ ] Gates (item 15)
-- [ ] PR and trace guard CLEAN (item 17); merge and publish left to the maintainer
+- [x] Packaging, e2e and upgrade from PyPI 0.2.1 (items 8, 10, 13, 14)
+- [x] Five QA lenses report PASS (item 19)
+- [ ] Independent reviewer (item 16)
+- [x] Gates (item 15)
+- [x] PR #4 open and trace guard CLEAN (item 17); merge and publish left to the maintainer
+
+## Scorecard
+
+| # | Item | Verdict | Evidence |
+| --- | --- | --- | --- |
+| 1 | API reviewed for stability | PASS | the nine 0.2.1 names kept with their signatures and defaults; additions only (`properties`, `numbers()`, `strings()`, `times()`); every behaviour change in CHANGELOG 1.0.0 and GUIDE "Upgrading from 0.2", checked side by side against PyPI 0.2.1 by lenses a and d |
+| 2 | `__all__` exact | PASS | `test_contract::test_all_lists_exactly_the_public_api`; no other public attribute |
+| 3 | Docstrings with runnable examples, doctests pass | PASS | every public name and method has `>>>` (`test_docs`); module doctests, GUIDE `pycon` blocks and README code run by the suite |
+| 4 | Typed end to end | PASS | `mypy --strict src tests` clean; `py.typed` shipped; outside strict consumers clean (lenses a and d); only `to_numpy()` returns `Any`, documented |
+| 5 | Typed, documented, safe errors | PASS | GUIDE error table; file text quoted to 40 characters (the end of a .tdx name), caller paths in full, CLI messages cut at 300; system failures propagate unchanged |
+| 6 | Contract asserts the full promise | PASS | 388 tests: promises per public name, every LabVIEW capture and NI probe against NI's recorded reading, hostile input, CLI in process and by subprocess, and the contracts from the review rounds |
+| 7 | Real ground truth | PASS | files LabVIEW 2026 wrote (two shipped examples and its TDMS-to-TDM converter), 56 probes, NI's own reading of all of them recorded (`ni_view.json`); lens b compared about 850,000 values against NI's DataStore reading over ten rounds |
+| 8 | Real e2e incl. PyPI upgrade | PASS | wheel built and installed in clean venvs, console script and `python -m` by subprocess, suite from the sdist with `src` removed against the wheel; PyPI 0.2.1 upgraded in place with every difference documented (lens d) |
+| 9 | Seeded fuzz, no crash, hang or blow-up | PASS | seeded mutation tests in the suite; lens c rounds with more than 60,000 fuzz cases, scaling of every input dimension linear, value allowance bounding generated, scaled and stored values |
+| 10 | Every interpreter | PASS | 3.10.22, 3.11.17, 3.12.15, 3.13.16, 3.14.2/3.14.6 and 3.14.8t from the installed wheel (lens d round 3: 366 or 367 passed); this PC's 3.13.2 runs the gates |
+| 11 | README | PASS | `twine check --strict` passed; absolute links; problem, verified why (tdm-loader and TDMtermite checked on PyPI), install, quick start, GUIDE and CHANGELOG links |
+| 12 | CHANGELOG dated 1.0.0 | PASS | `## [1.0.0] - 2026-10-15` with the stable surface and every behaviour change |
+| 13 | pyproject | PASS | 1.0.0, Production/Stable, 3.10 to 3.14, MIT, Homepage/Source/Issues/Changelog, keywords, `dependencies = []` (contract-tested) |
+| 14 | sdist and wheel contents | PASS | wheel: package, `py.typed`, LICENSE; sdist: source, tests with fixtures and manifests, the two fixture scripts, docs; NI SineData samples never shipped (manifest and fetch script only) |
+| 15 | Gates exit 0 alone | PASS | `ruff format --check .`, `ruff check .`, `mypy --strict src`, `pytest` each exit 0 alone |
+| 16 | Independent reviewer | see below | |
+| 17 | PR, trace guard | ready | PR #4 from `release/1.0.0`, trace guard CLEAN; merge and PyPI publish left to the maintainer |
+| 18 | Mutation round | PASS | author: 55 mutations, 55 killed after 5 contracts; blind lens e round 1: 96 mutations, 23 survivors closed by `tests/test_contract_strength.py`, 2 equivalent; blind lens e round 2 on the final source: 131 mutations, 108 killed, 16 closed by `tests/test_contract_strength_two.py`, 7 equivalent |
+| 19 | Five QA lenses | PASS | a (round 5), b (round 10), c (round 6), d (round 3), e (round 2) all PASS after every finding was fixed and re-verified |
 
 ## Baseline on 0.2.1 (before any change)
 
@@ -20,7 +45,6 @@ Progress:
 | `ruff format --check .`, `ruff check .`, `mypy --strict src tests` | exit 0 |
 | `pytest` | 43 passed (the fetched upstream samples present) |
 | `pytest --doctest-modules src` | no doctests at all |
-
 
 ## Ground truth (item 7)
 
@@ -136,3 +160,49 @@ run at 6eeda2b: 55 mutations, 55 killed.
 | M53 | property raw-text fallback raises | `_props.py` | killed | `tests/test_model.py::test_properties_are_typed_at_every_level_and_the_first_name_wins` |
 | M54 | header overrides tdx_path | `_tdx.py` | killed | `tests/test_promises.py::test_tdx_path_overrides_the_header` |
 | M55 | inline time not parsed | `_inline.py` | killed | `tests/test_hostile.py::test_bad_inline_values_raise[time_sequence-2026-02-30T00:00:00]` |
+
+## QA lenses (item 19)
+
+Each lens was a fresh reviewer that read the certification rules first, worked in its own
+clone, ran things rather than reading, and reported back privately. From 2026-10-15 only one
+reviewer ran at a time. Heavy runs went to the laptop or the second build machine.
+
+| Lens | Round | Head | Verdict | Findings and outcome |
+| --- | --- | --- | --- | --- |
+| a | 1 | afe7b45 | FAIL | .tdx url text leaked into long untyped errors; `dump` output corrupt on a non-UTF-8 console; upgrade notes incomplete; `channels` showed `explicit` as a type. Fixed in a410a2d |
+| a | 2 | 020a62e | FAIL | two missing upgrade notes (`LookupError`, `struct.error`), missing-.tdx message hid the name, invalid names reported as outside the folder, path wording. Fixed in 4937b98 and 55f77de |
+| a | 3 | 55f77de | FAIL | a url starting with a backslash escaped the header folder on Windows; a .tdx folder raised `PermissionError`; .tdx labels cut. Fixed in e5a4df0 |
+| a | 4 | e5a4df0 | FAIL | a long caller path was cut in messages; every OSError opening the .tdx became `TdmError`; folder case missing from the upgrade notes. Fixed in d994cb1 |
+| a | 5 | d994cb1 | PASS | three low notes on wording, addressed in b7828e2 |
+| b | 1 | afe7b45 | FAIL | .tdx and header times cut instead of rounded as NI does (3936 of 5000 LabVIEW times 1 us low); inline bytes, floats and multi-part string properties read differently from NI. Fixed in 0e4822f |
+| b | 2 to 9 | 2182cac to ad35584 | FAIL | NI's exact rules at the edges: no carry past the second, header times read through a double, integers clamped to 32 bits before narrowing, last property wins, any digit count; then documentation of NI's lenient text reading. Fixed in 6df10da, 90d7c95, 885363c, f938d64, 1e023d3, 8b57baa, cbceb0e, ad35584, 020a62e |
+| b | 10 | 020a62e | PASS | every statement about NI behaviour and every accepted form checked against NI's reading |
+| c | 1 | afe7b45 | FAIL | quadratic work on shared references, `ValueError` from odd encodings, raw `OSError` from hostile .tdx names, closed streams. Fixed in 3ee5c01 |
+| c | 2 | 0e4822f | FAIL | overlapping blocks multiplied header and .tdx size; repeated groups; shared generated column lengths; names with control characters. Fixed in 52c0d84 |
+| c | 3 | 52c0d84 | FAIL | the allowance rejected real raw_linear files; sparse block_bm read whole spans; padded shared columns rescanned. Fixed in 39d9d52 |
+| c | 4 and 5 | 39d9d52, 6d4e461 | FAIL | Windows reports a vanished pipe reader as EINVAL; argparse paths and stderr kept exit 120. Fixed in 6d4e461 and 251c99a |
+| c | 6 | 251c99a | PASS | 416 subprocess runs over closed streams, 4,000 fuzz cases, spot checks of all earlier fixes |
+| d | 1 | afe7b45 | FAIL | three behaviour changes missing from the upgrade notes. Fixed in 93df864 |
+| d | 2 | b7828e2 | FAIL | Python 3.10 argparse did not ignore failed usage writes (exit 1 instead of 2); fixture scripts missing from the sdist. Fixed in 55fd275 |
+| d | 3 | 55fd275 | PASS | 3.10 to 3.14t from the installed wheel; two low notes (descriptor closed inside the process, `channels` type of generated channels) fixed in c0f03f6 |
+| e | 1 | afe7b45 | PASS with contracts | 96 blind mutations, 23 survivors closed by `tests/test_contract_strength.py`, 2 equivalent |
+| e | 2 | c0f03f6 | PASS with contracts | 131 blind mutations on the final source, 16 survivors closed by `tests/test_contract_strength_two.py` (1d08d5d), 7 equivalent with proofs |
+
+## Decisions for the maintainer
+
+- Behaviour changes against PyPI 0.2.1 are all listed in CHANGELOG 1.0.0 and GUIDE "Upgrading
+  from 0.2". The ones most likely to matter: `eInt8Usi` is unsigned (255, not -1); string,
+  time and inline values are now read; `implicit_linear` follows NI's rules; a .tdx outside
+  the header's folder is refused; malformed input raises `TdmError` instead of other types;
+  `dump -f json` writes valid ASCII JSON.
+- Where NI's two readers or NI's lenient text parsing disagree with a sound reading, tdmread
+  is stricter or exact, and GUIDE "Where tdmread differs" lists every case found.
+- `block_mr` layouts are refused: NI's own readers disagreed on them when probed.
+- The value allowance (ten million plus one per .tdx byte, per account) protects against
+  tiny headers asking for gigabytes; a huge implicit-only file would hit it.
+- The fixtures in `tests/fixtures/labview2026` are LabVIEW 2026 output made on this PC and
+  NI's recorded reading of it; they ship in the sdist with their manifests. No NI text is in
+  the repository; the NI SineData samples stay out (manifest and fetch script only).
+- The README links to GUIDE.md and CHANGELOG.md on `main`: publish only after merging.
+- The sdist carries `.gitignore` (hatchling always adds it).
+- GUIDE.md and this report are longer than 200 lines; the limit applies to source files.
