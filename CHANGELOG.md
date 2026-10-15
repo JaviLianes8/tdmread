@@ -29,7 +29,8 @@ against NI's own reader; GUIDE.md lists the rules and the few deliberate differe
 ### Changed
 
 - `eInt8Usi` is an unsigned byte, as NI writes and reads it (0.2.1 read it as signed).
-- `Channel.data` is typed `tuple[float, ...] | tuple[str, ...] | tuple[datetime, ...]`.
+- `Channel.data` is typed `tuple[float, ...] | tuple[str, ...] | tuple[datetime, ...]` and
+  `Channel.to_list()` `list[float] | list[str] | list[datetime]`.
 - `implicit_linear` follows NI's reader: the length comes from the row count first, a
   single parameter gives a constant, and missing parameters come from the stored values
   (0.2.1 produced `0, 1, 2, ...`); `implicit` is no longer accepted.

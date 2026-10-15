@@ -35,7 +35,7 @@ Progress:
 | 15 | Gates exit 0 alone | PASS | `ruff format --check .`, `ruff check .`, `mypy --strict src`, `pytest` each exit 0 alone |
 | 16 | Independent reviewer | see below | |
 | 17 | PR, trace guard | ready | PR #4 from `release/1.0.0`, trace guard CLEAN; merge and PyPI publish left to the maintainer |
-| 18 | Mutation round | PASS | author: 55 mutations, 55 killed after 5 contracts; blind lens e round 1: 96 mutations, 23 survivors closed by `tests/test_contract_strength.py`, 2 equivalent; blind lens e round 2 on the final source: 131 mutations, 108 killed, 16 closed by `tests/test_contract_strength_two.py`, 7 equivalent |
+| 18 | Mutation round | PASS | independent reviewer: 48 mutations, 43 killed, 4 closed by `tests/test_contract_review.py`, 1 equivalent; author: 55 mutations, 55 killed after 5 contracts; blind lens e round 1: 96 mutations, 23 survivors closed by `tests/test_contract_strength.py`, 2 equivalent; blind lens e round 2 on the final source: 131 mutations, 108 killed, 16 closed by `tests/test_contract_strength_two.py`, 7 equivalent |
 | 19 | Five QA lenses | PASS | a (round 5), b (round 10), c (round 6), d (round 3), e (round 2) all PASS after every finding was fixed and re-verified |
 
 ## Baseline on 0.2.1 (before any change)
@@ -101,7 +101,8 @@ sample covered it), the `..` check (a test matched "outside" in its own temporar
 the drive check (equivalent: the `:` and absolute-path checks already refuse drives, so it
 was removed), and the command's 300-character cut (library messages are already bounded).
 Contracts were added in 6eeda2b and M34 now mutates the `:` check. The table is the final
-run at 6eeda2b: 55 mutations, 55 killed.
+run at 6eeda2b: 55 mutations, 55 killed. The code changed after it in response to the lenses; the
+blind lens e round 2 and the independent reviewer's round cover the final source.
 
 | Id | Mutation | File | Result | Caught by |
 | --- | --- | --- | --- | --- |
@@ -142,7 +143,7 @@ run at 6eeda2b: 55 mutations, 55 killed.
 | M35 | DTD accepted | `_reader.py` | killed | `tests/test_hostile.py::test_text_that_is_not_a_tdm_header_raises_tdm_error[<?xml` |
 | M36 | any XML root accepted | `_reader.py` | killed | `tests/test_hostile.py::test_text_that_is_not_a_tdm_header_raises_tdm_error[<svg/>]` |
 | M37 | unknown encoding leaks | `_reader.py` | killed | `tests/test_hostile.py::test_seeded_byte_mutations_of_real_files_raise_only_tdm_errors[0]` |
-| M38 | last property name wins | `_props.py` | killed | `tests/test_model.py::test_properties_are_typed_at_every_level_and_the_first_name_wins` |
+| M38 | last property name wins (the rule at the time; the shipped rule is now last wins) | `_props.py` | killed | `tests/test_model.py::test_properties_are_typed_at_every_level_and_the_first_name_wins` (since renamed) |
 | M39 | string parts joined without newline | `_props.py` | killed | `tests/test_model.py::test_properties_are_typed_at_every_level_and_the_first_name_wins` |
 | M40 | byte properties stay text | `_props.py` | killed | `tests/test_labview_captures.py::test_converted_types_hold_the_values_written_into_the_source` |
 | M41 | bool counted as number | `_channel.py` | killed | `tests/test_model.py::test_typed_accessors_return_the_data_or_refuse_another_kind` |
@@ -206,3 +207,9 @@ reviewer ran at a time. Heavy runs went to the laptop or the second build machin
 - The README links to GUIDE.md and CHANGELOG.md on `main`: publish only after merging.
 - The sdist carries `.gitignore` (hatchling always adds it).
 - GUIDE.md and this report are longer than 200 lines; the limit applies to source files.
+
+## Independent reviewer (item 16)
+
+| Review | Head | Verdict | Findings and outcome |
+| --- | --- | --- | --- |
+| 1 | ebceaf2 | FAIL (items 6 and 18) | items 1 to 5, 7 to 15 and 19 PASS; 48 mutations of its own, 43 killed, 1 equivalent (the UTF-16 big-endian DTD mark), 4 survived (missing byteOffset, a sequence without values, a one-byte past-end check, the 40-character quote); its 4 contracts added in `tests/test_contract_review.py`; CHANGELOG line for `to_list()`, stale process note removed, author table note. Fixed in the next commit |
