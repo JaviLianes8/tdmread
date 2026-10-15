@@ -150,13 +150,13 @@ name and description under those names instead).
 
 | Exception | Raised when |
 | --- | --- |
-| `TdmFileNotFoundError` (a `TdmError` and a `FileNotFoundError`) | the header, or a `.tdx` a channel needs, is missing |
+| `TdmFileNotFoundError` (a `TdmError` and a `FileNotFoundError`) | the header path is not a readable file (missing, a folder, or a name the system rejects), or a `.tdx` a channel needs is missing |
 | `UnsupportedTdmError` (a `TdmError`) | the dataset uses something tdmread does not read (see above) |
 | `TdmError` | anything else malformed: not XML, not a TDM header, a DTD, an unknown text encoding, a bad number or time, a reference to a missing sequence or block, a block past the end of the `.tdx`, a negative or non-integer count, a `.tdx` location outside the header folder or not a valid file name, a `.tdx` that is a folder, a generated size over the limit |
 
 Other `OSError`s (for example a permission error, or too many open files) propagate
 unchanged. Messages quote at most 40 characters of any text taken from a file (for the
-`.tdx` name, its last 40); a path the caller passed is shown in full. The command line prints errors as
+`.tdx` name, its last 40); a path the caller passed is shown in full, as a path. The command line prints errors as
 `tdmread: error: ...` (cut to 300 characters) and exits with 1; usage errors exit with 2,
 an interrupt with 130. When the reader of its output or errors goes away, the command
 ends quietly: with 1 if it noticed the lost output, otherwise with its usual code.
@@ -268,8 +268,8 @@ Changes that can alter what a 0.2.1 call returned or raised:
   them, however large).
 - A missing `.tdx` that no channel needs is no longer an error (0.2.1 raised
   `TdmFileNotFoundError` whenever the header listed blocks).
-- A block attribute that is not an integer or is negative raises `TdmError` (0.2.1 raised
-  `ValueError` or `struct.error`).
+- A block attribute that is not an integer, or a negative `length`, raises `TdmError`
+  (0.2.1 raised `ValueError` or `struct.error`).
 - When two elements share an id, the first one is used (0.2.1 used the last).
 - `Channel.to_list()` is typed `list[float] | list[str] | list[datetime]`.
 - `tdmread dump`: JSON writes non-finite floats as the strings `"inf"`, `"-inf"` and
