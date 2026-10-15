@@ -205,8 +205,8 @@ and times written oddly) were checked by hand-made probes that are not part of t
   unrelated or negative years, keeps year 0000, and normalises impossible dates (any month
   outside 1 to 12 becomes January, day 0 becomes day 1, other overflows roll over).
   tdmread accepts only these forms: integers as optionally signed decimal digits; floats
-  in decimal or exponent notation, or any case of `inf`, `infinity` and `nan`; numbers up
-  to 400 characters; times in exactly that form (an optional bare trailing dot allowed)
+  in decimal or exponent notation (exponents of at most 6 digits), or any case of `inf`,
+  `infinity` and `nan`; numbers up to 400 characters, sign included; times in exactly that form (an optional bare trailing dot allowed)
   whose rounded value falls in years 1 to 9999. Surrounding whitespace is ignored.
   Anything else raises `TdmError`, or stays raw text in a property.
 - NI matches property names regardless of case (`Aa` and `aa` are one property); tdmread

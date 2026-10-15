@@ -75,3 +75,10 @@ def test_integers_of_any_reasonable_length_are_clamped(
 def test_a_header_time_may_end_with_a_bare_dot(tmp_path: Path) -> None:
     header = Dataset([inline(0, "time_sequence", "2026-10-14T12:00:01.")]).write(tmp_path)
     assert read_tdm(header).groups[0].channels[0].data == (datetime(2026, 10, 14, 12, 0, 1),)
+
+
+def test_numbers_are_limited_to_400_characters_sign_included(tmp_path: Path) -> None:
+    for kind in ("long", "double"):
+        header = Dataset([inline(0, f"{kind}_sequence", "+" + "1" * 400)]).write(tmp_path)
+        with pytest.raises(TdmError):
+            read_tdm(header)

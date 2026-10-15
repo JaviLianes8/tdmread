@@ -23,7 +23,7 @@ def parse_integer(token: str) -> int:
     >>> parse_integer("-42")
     -42
     """
-    if not _INTEGER.fullmatch(token):
+    if len(token) > 400 or not _INTEGER.fullmatch(token):
         raise TdmError(f"invalid integer value {quote(token)}")
     return int(token)
 
