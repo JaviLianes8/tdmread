@@ -29,6 +29,7 @@ def _closed(args: list[str], close_stderr: bool) -> int:
         process.stderr.close()
         return process.wait(timeout=60)
     err = process.stderr.read()
+    process.stderr.close()
     code = process.wait(timeout=60)
     assert b"Errno" not in err and b"Exception ignored" not in err
     return code

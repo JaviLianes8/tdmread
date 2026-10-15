@@ -119,5 +119,6 @@ def test_a_reader_gone_before_the_first_write_ends_the_command_quietly() -> None
         assert process.stdout is not None and process.stderr is not None
         process.stdout.close()
         err = process.stderr.read()
+        process.stderr.close()
         assert process.wait(timeout=60) == 1
         assert err == b""
