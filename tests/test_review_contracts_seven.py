@@ -79,3 +79,29 @@ def test_a_tdx_that_is_a_folder_or_missing_is_named_by_its_url(tmp_path: Path) -
     (tmp_path / "sub" / "x.tdx").mkdir(parents=True)
     with pytest.raises(TdmError, match=r"is a folder|cannot open"):
         read_tdm(header)
+
+
+def test_a_given_tdx_path_is_named_in_full(tmp_path: Path) -> None:
+    dataset = Dataset([stored(0, "double_sequence", "i")], block("i", 0, 1, "eFloat64Usi"))
+    header = dataset.write(tmp_path)
+    missing = tmp_path / "somewhere" / "deeper" / "still" / "my_measurement_data.tdx"
+    with pytest.raises(TdmError) as caught:
+        read_tdm(header, missing)
+    assert str(missing) in str(caught.value)
+
+
+def test_operating_system_failures_opening_the_tdx_propagate(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import errno
+
+    dataset = Dataset([stored(0, "double_sequence", "i")], block("i", 0, 1, "eFloat64Usi"))
+    header = dataset.write(tmp_path)
+
+    def failing(*args: object, **kwargs: object) -> object:
+        raise OSError(errno.EMFILE, "Too many open files")
+
+    monkeypatch.setattr("tdmread._tdx.open", failing, raising=False)
+    with pytest.raises(OSError) as caught:
+        read_tdm(header)
+    assert not isinstance(caught.value, TdmError)

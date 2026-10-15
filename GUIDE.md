@@ -154,8 +154,9 @@ name and description under those names instead).
 | `UnsupportedTdmError` (a `TdmError`) | the dataset uses something tdmread does not read (see above) |
 | `TdmError` | anything else malformed: not XML, not a TDM header, a DTD, an unknown text encoding, a bad number or time, a reference to a missing sequence or block, a block past the end of the `.tdx`, a negative or non-integer count, a `.tdx` location outside the header folder or not a valid file name, a `.tdx` that is a folder, a generated size over the limit |
 
-Other `OSError`s (for example a permission error) propagate unchanged. Messages quote at
-most 40 characters of any text taken from a file. The command line prints errors as
+Other `OSError`s (for example a permission error, or too many open files) propagate
+unchanged. Messages quote at most 40 characters of any text taken from a file (for the
+`.tdx` name, its last 40); a path the caller passed is shown in full. The command line prints errors as
 `tdmread: error: ...` (cut to 300 characters) and exits with 1; usage errors exit with 2,
 an interrupt with 130. When the reader of its output or errors goes away, the command
 ends quietly: with 1 if it noticed the lost output, otherwise with its usual code.
@@ -258,8 +259,8 @@ Changes that can alter what a 0.2.1 call returned or raised:
   XML raises `TdmError` instead of `xml.etree.ElementTree.ParseError`, and an unknown
   text encoding raises `TdmError` instead of `LookupError`.
 - A `.tdx` location outside the header's folder, or that is not a valid file name, is
-  refused; a `.tdx` name the system
-  cannot open raises `TdmError` (0.2.1 raised a plain `OSError`).
+  refused; a `.tdx` name the system cannot open raises `TdmError` (0.2.1 raised a plain
+  `OSError`), and so does a `.tdx` that is a folder (0.2.1 raised `PermissionError`).
 - A `block_bm` layout is read, and raises `TdmError` when it runs past the end of the
   `.tdx`; a `block_mr` layout raises `UnsupportedTdmError` (0.2.1 returned empty channels
   for both).

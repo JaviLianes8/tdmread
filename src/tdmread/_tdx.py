@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import errno
 import os
 from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import BinaryIO
@@ -11,6 +12,12 @@ from ._errors import TdmError, TdmFileNotFoundError, quote
 StrPath = str | os.PathLike[str]
 # Characters no Windows file name can hold, and the drive or stream separator.
 _FORBIDDEN = frozenset(':<>"|?*')
+_BAD_NAME = frozenset({errno.EINVAL, errno.ENAMETOOLONG})
+
+
+def _tail(text: str) -> str:
+    """Quote the last 40 characters of `text`, where a file name sits."""
+    return repr(text) if len(text) <= 40 else repr("..." + text[-37:])
 
 
 def locate(header: Path, url: str | None, override: StrPath | None) -> Path:
@@ -39,10 +46,11 @@ def locate(header: Path, url: str | None, override: StrPath | None) -> Path:
 class TdxSource:
     """Read ranges from a .tdx file, opening it only when a value is first needed."""
 
-    def __init__(self, path: Path, label: str = "") -> None:
+    def __init__(self, path: Path, url: str = "") -> None:
         self._path = path
-        # How messages name the file: the header's url (or the given path), quoted short.
-        self._label = quote(label or str(path))
+        # Messages name the file by the header's url (its end, quoted short), or by the full
+        # path when the caller gave one: that text is the caller's, not the file's.
+        self._label = _tail(url) if url else str(path)
         self._handle: BinaryIO | None = None
         self._size = 0
 
@@ -89,15 +97,17 @@ class TdxSource:
                 self._handle = open(self._path, "rb")  # noqa: SIM115 - closed by __exit__
             except FileNotFoundError:
                 raise TdmFileNotFoundError(f"TDX data not found: {self._label}") from None
-            except PermissionError:
+            except (PermissionError, IsADirectoryError):
                 if self._path.is_dir():
                     raise TdmError(f"the .tdx {self._label} is a folder") from None
                 raise
             except ValueError:
                 raise TdmError(f"cannot open the .tdx {self._label}") from None
             except OSError as exc:
-                # A name the system cannot open (too long, reserved characters) is a bad
-                # dataset, not an operating-system failure.
-                raise TdmError(f"cannot open the .tdx {self._label}: {exc.strerror}") from None
+                # A name the system cannot open (too long, invalid) is a bad dataset; any
+                # other failure is the operating system's and propagates unchanged.
+                if exc.errno in _BAD_NAME or getattr(exc, "winerror", None) == 123:
+                    raise TdmError(f"cannot open the .tdx {self._label}: {exc.strerror}") from None
+                raise
             self._size = os.fstat(self._handle.fileno()).st_size
         return self._handle
