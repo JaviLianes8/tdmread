@@ -1,0 +1,570 @@
+{
+ "made_by": "scripts/make_ni_probes.py; the files are ours, only ni_view.json records NI's reading of them",
+ "files": {
+  "ni_view.json": {
+   "how": "how NI's software reads each probe, recorded on 2026-10-14 by scripts/capture_ni.py",
+   "size": 32202,
+   "sha256": "5fcda3cea862b1f0664127d387efb1709f01be80a9b74c3d0813121ed89f8493"
+  },
+  "p01_bytes.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 7099,
+   "sha256": "ce89e4d0216e3a0afa5c35db5bf78168f68bc2219ddafb37da2f6488066e8d69"
+  },
+  "p01_bytes.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 28,
+   "sha256": "189b96a8b256ad5accbf7e87f20a1a1b9e7bb1059f943a5e8ec2d4a48dc179f6"
+  },
+  "p02_ints.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 11756,
+   "sha256": "30c073bd873bc4206a4d8d26abd5606af8d1fefbba2681f835ac6b206378188c"
+  },
+  "p02_ints.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 208,
+   "sha256": "0a8277a305aad61e816627111454bfa78ff727e865a1c1e6021f302c8b124201"
+  },
+  "p03_inline_00.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1572,
+   "sha256": "e845c188d5be9ba1937a3ba05b9bd8e02b9742b6c910313d6355aaa93bca298c"
+  },
+  "p03_inline_00.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p03_inline_01.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1579,
+   "sha256": "9b49d3ce31aed56ce835223d0978631c31704c50bb4d7ee469c94df7612c19d9"
+  },
+  "p03_inline_01.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p03_inline_02.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1578,
+   "sha256": "6830bb1ed26db7588da6c003582bfd417d159093facd802f47b8f70114237b91"
+  },
+  "p03_inline_02.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p03_inline_03.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1614,
+   "sha256": "de18becd223bbe50c45c64810a70b732aa605faa0e6e5e57dfdcfa46529c73fa"
+  },
+  "p03_inline_03.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p03_inline_04.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1583,
+   "sha256": "b1fe448b0b77e96a59e9d508085732621b2a5c7667c34a654e0358effb219448"
+  },
+  "p03_inline_04.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p03_inline_05.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1590,
+   "sha256": "7e6e4e9c171f433c42dd6dfcf011c25492f2dde63d5fb032d64c7dd3e6e44301"
+  },
+  "p03_inline_05.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p03_inline_06.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1584,
+   "sha256": "ccec546a62cb59a020437dbe1825d28fdbaaf9f18ac818579b4af12540cbe4e1"
+  },
+  "p03_inline_06.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p03_inline_07.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1600,
+   "sha256": "4730cd3ab4cf161ea9bf6dd2014b1ad518da5be719b8f630c578f084c9238b92"
+  },
+  "p03_inline_07.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p03_inline_08.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1582,
+   "sha256": "9a61add755393935f683df0a8def88b47944593a474dcc9fa679cf59f112de16"
+  },
+  "p03_inline_08.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p03_inline_09.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1578,
+   "sha256": "5b4a269ad8d78729e18f69203383f88f900ba4f796a9b3b40c5702f2429d625d"
+  },
+  "p03_inline_09.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p03_inline_10.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1585,
+   "sha256": "3452e074cd490c7ce10279a2632f99b1a34f04ea08464e74d3311ab5ca53efb2"
+  },
+  "p03_inline_10.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p03_inline_11.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1585,
+   "sha256": "4ea36d93eb212162da9a5c85a864bc1eed1e4c11c9856a4ba8ce16fe7e8c0e63"
+  },
+  "p03_inline_11.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p03_inline_12.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1594,
+   "sha256": "00942d7c16f8493b907a2a1d1c06d4573600926105e5e22370ba78469c0f8c57"
+  },
+  "p03_inline_12.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p03_inline_13.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1573,
+   "sha256": "8ef4f86ee01aeb03b303568a539720bb85174894f46c74810106e6268c491208"
+  },
+  "p03_inline_13.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p03_inline_14.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1592,
+   "sha256": "7e40174e56415fdd0b3c1a0e2872c660137fc2684a49bac4f20557ddd22dc9bd"
+  },
+  "p03_inline_14.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p04_bigendian.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 4150,
+   "sha256": "b1cab78e1a8a7565b7941e64a37191b75c887c7f5e3f38836641a3f85d1df625"
+  },
+  "p04_bigendian.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 18,
+   "sha256": "6e036c8561975a689f9ec49ca9938b23855f39c47822fe17c0aba1d540d27691"
+  },
+  "p05_time.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1584,
+   "sha256": "d81e85843c1e498344fb5750518f2ea2fba593fdeb605a5a419611bcf2c88007"
+  },
+  "p05_time.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 64,
+   "sha256": "24340f4440aaee977e4cc78c53c7980b8fb928828d7f5045b7b729836ddf88bb"
+  },
+  "p05_time_be.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1587,
+   "sha256": "0c3006d46a7f301c6655853b27c6cf47476bd77aa5b8a78ded091e7ebbeb6329"
+  },
+  "p05_time_be.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 48,
+   "sha256": "07fd4d5af769a5f6ddd63cfb955dfeead535d253cafed4861831216e294b0fea"
+  },
+  "p06_rows.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 3337,
+   "sha256": "6015a9be32a8c679dc8a29a4fbd9becd7fae4fa2c0ade2bad9a85678bf6328f2"
+  },
+  "p06_rows.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 48,
+   "sha256": "d73f023a3f852bf2e5c6d836cd36cd930d0091dcba7f778161c707e1c58222b0"
+  },
+  "p07_a_lin_with_values.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1729,
+   "sha256": "9f4809b76c4ad109bb5176523b34bad6b5de985040045e513747a0d3d3ff3b29"
+  },
+  "p07_a_lin_with_values.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 40,
+   "sha256": "d11414ea3d440d6833aabebb2f0dbe929a505d50820bc00551869da833eff070"
+  },
+  "p07_b_lin_no_values.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1535,
+   "sha256": "5f681e84150b7f12a572c03d85ae7f1270d60c19b23d3b23af98c7a2006d7744"
+  },
+  "p07_b_lin_no_values.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p07_c_constant.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1511,
+   "sha256": "01e85c6ae9167a40d0fe477a886870580e478828f0c0fb2cd19a3c4322b6cb62"
+  },
+  "p07_c_constant.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p07_d_raw_linear_1_05.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1717,
+   "sha256": "b363b9adc0ab4273e946e0405302aebe0396ee2a57d11e8f52294e60e389eb96"
+  },
+  "p07_d_raw_linear_1_05.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 6,
+   "sha256": "a346df4ad294f1b0cf0f44a9880ef34b8488d0679e39f28be94fc2020cac2729"
+  },
+  "p07_e_raw_linear_3_2.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1710,
+   "sha256": "855806060f08a6719b0c257a245863e8a9f9a224e2e9c2d1824700f13bd34ddb"
+  },
+  "p07_e_raw_linear_3_2.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 6,
+   "sha256": "a346df4ad294f1b0cf0f44a9880ef34b8488d0679e39f28be94fc2020cac2729"
+  },
+  "p07_f_raw_linear_external.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1744,
+   "sha256": "0b08df4daa21a4088009cfa4bfaf375c214914ae84e6a3a63e426cb5a81a78c6"
+  },
+  "p07_f_raw_linear_external.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 6,
+   "sha256": "a346df4ad294f1b0cf0f44a9880ef34b8488d0679e39f28be94fc2020cac2729"
+  },
+  "p07_g_saw.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1483,
+   "sha256": "29830517a7fcb0de7fa5e0303babf885b479afb51ac3aac9f5c577f56ce6f222"
+  },
+  "p07_g_saw.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p07_h_raw_poly.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1688,
+   "sha256": "55125bac4e59860a1fabbd68d4a5de5869b24d63d21693cdb3e4e24573b478bc"
+  },
+  "p07_h_raw_poly.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 6,
+   "sha256": "a346df4ad294f1b0cf0f44a9880ef34b8488d0679e39f28be94fc2020cac2729"
+  },
+  "p07_i_implicit_alias.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1533,
+   "sha256": "ae2117ea149849bfd6ddb841f08be79220c5d32d1c37c15d4b42d4b984d890ba"
+  },
+  "p07_i_implicit_alias.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p07_j_lin_one_param.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1532,
+   "sha256": "f1e480ddf4598605fd5dd1fce6c7259b396ab2064b3af5dcf32e490ca2c823d5"
+  },
+  "p07_j_lin_one_param.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p07_k_lin_no_param.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1479,
+   "sha256": "004cc7fefee498cdf003b9b5b40610c7ec84215b812c3e22c654a99f38122d89"
+  },
+  "p07_k_lin_no_param.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p07_l_lin_long.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1508,
+   "sha256": "ae77d06245413c9b56433174a6676c9d835190c8a73913f8e0cfe580f83b73b8"
+  },
+  "p07_l_lin_long.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p07_m_lin_three_params.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1553,
+   "sha256": "5dbdb27861e212cce61fbf1917e0a3a33031bc1c5438269f59be1b493d915b2f"
+  },
+  "p07_m_lin_three_params.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p07_n_no_repr.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1568,
+   "sha256": "d92c7328e871c003cce9db8ac49eb205e636530a108409bc0616a4d7f9935ba0"
+  },
+  "p07_n_no_repr.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 40,
+   "sha256": "d11414ea3d440d6833aabebb2f0dbe929a505d50820bc00551869da833eff070"
+  },
+  "p07_o_const_no_values_long.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1569,
+   "sha256": "3e8fbe63d32a57c4a0f586254ba5c873b0e65b6295af33ea5a0840a4fa5a6d3e"
+  },
+  "p07_o_const_no_values_long.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p07_p_raw_linear_double.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1729,
+   "sha256": "11beb23ef2f95eea6eecdd43a73dd7daff1d55592fa1774bb45ad2c0cf88bd97"
+  },
+  "p07_p_raw_linear_double.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 40,
+   "sha256": "d11414ea3d440d6833aabebb2f0dbe929a505d50820bc00551869da833eff070"
+  },
+  "p08_blk_blockoffset.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 2488,
+   "sha256": "94e4327a96645e9fc91eceb41f0c806f6446533506ca02d8ac80a38c2471aaee"
+  },
+  "p08_blk_blockoffset.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 36,
+   "sha256": "2656a272c407a77fb8d527847d179c0b2aa5877e984af1ec79eabe9bd504868d"
+  },
+  "p08_blk_blocksize.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 2480,
+   "sha256": "1b7d51f30e5aa25c88e5a6d858dd2cb579fc2dfa6fdd826aaae0153d81efdac9"
+  },
+  "p08_blk_blocksize.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 36,
+   "sha256": "2656a272c407a77fb8d527847d179c0b2aa5877e984af1ec79eabe9bd504868d"
+  },
+  "p08_bm_a_12_8.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 2510,
+   "sha256": "f238cf9e12b0cbfb5adcf1e4727baff71e40dd0e3e848f2685ea6d4b36dc1dbe"
+  },
+  "p08_bm_a_12_8.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 36,
+   "sha256": "2656a272c407a77fb8d527847d179c0b2aa5877e984af1ec79eabe9bd504868d"
+  },
+  "p08_bm_b_8_12.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 2510,
+   "sha256": "292388937493bab7719668048d0f0f10d34627c64de870f21944941bbf932e45"
+  },
+  "p08_bm_b_8_12.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 36,
+   "sha256": "2656a272c407a77fb8d527847d179c0b2aa5877e984af1ec79eabe9bd504868d"
+  },
+  "p08_bm_c_0_12.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 2510,
+   "sha256": "6fb5ab34397e4cba9d96d66177b3ef948cd2d4a866e7abcb7cdd7143a85c9c13"
+  },
+  "p08_bm_c_0_12.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 36,
+   "sha256": "2656a272c407a77fb8d527847d179c0b2aa5877e984af1ec79eabe9bd504868d"
+  },
+  "p08_mr_a.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 2536,
+   "sha256": "4886b993bf8d10929e4d80d35419e15015e180d9aed30e5eefef14a71442aec1"
+  },
+  "p08_mr_a.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 36,
+   "sha256": "2656a272c407a77fb8d527847d179c0b2aa5877e984af1ec79eabe9bd504868d"
+  },
+  "p09_strext_0.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1600,
+   "sha256": "653e1ee94ef044a0f78e4c7ed3604a7ac2f2ee2d187ce7508d9fbace10dfc345"
+  },
+  "p09_strext_0.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 10,
+   "sha256": "382a92d9ace42f779cbfb6ff0a6dc5a880f905f34c1c23b0e2b81c3ed0d5baf7"
+  },
+  "p09_strext_1.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1600,
+   "sha256": "3e82bcfb8f412732464c57e9beeecaad88e64977158deb0613b6a67b8096b4b0"
+  },
+  "p09_strext_1.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 8,
+   "sha256": "e95c63dda58322c6ae422d41bc1c7fad6b2ee560e182cf80514f10380abec678"
+  },
+  "p09_strext_2.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1600,
+   "sha256": "14ecbd7d200118d75da978e6ea528e05ede51fe12e050eef101482fc6374e742"
+  },
+  "p09_strext_2.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 5,
+   "sha256": "1bd95cf6379b94fd3b6ceb1390b70b822c76442c4bfb8273b941e09d8dfd9b56"
+  },
+  "p10_implen_0.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1579,
+   "sha256": "ddbe96d0557cac58b0e5404fef34542dc04e07e7e13346b60a37bcc3deeb1f9d"
+  },
+  "p10_implen_0.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p10_implen_1.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1478,
+   "sha256": "d9d08cd0625713b4fe50bf15002fde3a9aec833b9b7b19302d0295b14ab5c0b6"
+  },
+  "p10_implen_1.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p10_implen_2.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1545,
+   "sha256": "0edad407d017a20ad8d641a45134cd5e3e6e2f25c2257972c2892be20fa9c9e4"
+  },
+  "p10_implen_2.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p11_overlap.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 2449,
+   "sha256": "e85e48961539a6b2ccbe0ed0718f9cdbc744f519ba5aa005e710389157dc2533"
+  },
+  "p11_overlap.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 36,
+   "sha256": "2656a272c407a77fb8d527847d179c0b2aa5877e984af1ec79eabe9bd504868d"
+  },
+  "p11_past_end.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1602,
+   "sha256": "996450445a9b9e3dd2c9c57aa0a92eab5acb9e89d643c440439a2955df14c62c"
+  },
+  "p11_past_end.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 36,
+   "sha256": "2656a272c407a77fb8d527847d179c0b2aa5877e984af1ec79eabe9bd504868d"
+  },
+  "p12_inline_time.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1574,
+   "sha256": "e07bf902c9734fb9dbf833bfc74d70aaaa22fe9df58306a31f049d99336c84f4"
+  },
+  "p12_inline_time.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p13_linear_negative.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1498,
+   "sha256": "2920721c3c88669dad4e5fec3d3bd41b2add415349825496adb9be88751e4237"
+  },
+  "p13_linear_negative.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "p14_raw_int32.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1657,
+   "sha256": "64dbf3c4d1f53c0daaae9bab1a03bbb9c143739f53f1888bafe1c84d3e8b41c3"
+  },
+  "p14_raw_int32.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 12,
+   "sha256": "9f9540dcacd8c1d220e3b0f87339c198a1520590c99c7dad516e3e09abc8a6f0"
+  },
+  "p15_no_byteorder.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1576,
+   "sha256": "5b8541cb72e6ccefd877da498d7bcab8c45d3094b1c2de5631ae89cac3d5c8cb"
+  },
+  "p15_no_byteorder.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 12,
+   "sha256": "9f9540dcacd8c1d220e3b0f87339c198a1520590c99c7dad516e3e09abc8a6f0"
+  },
+  "p16_float32_in_float.tdm": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 1614,
+   "sha256": "cf98a7e388b93b5e416e8939edf74df776684aad7049f81343bacd30be6ae1f7"
+  },
+  "p16_float32_in_float.tdx": {
+   "how": "hand-made probe written by scripts/make_ni_probes.py (our own data, not NI output)",
+   "size": 8,
+   "sha256": "1df398eaa487025aefcce3930b0833f8b20da4f36abe2f6e0cee7a58dfebc959"
+  }
+ }
+}

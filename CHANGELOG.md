@@ -6,6 +6,54 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-10-15
+
+The public API is now stable: `read_tdm`, `TdmFile`, `Group`, `Channel`, `FileMetadata`,
+`supported_value_types`, `TdmError`, `TdmFileNotFoundError` and `UnsupportedTdmError`, and
+the `tdmread` command. Every reading rule was checked against files LabVIEW 2026 wrote and
+against NI's own reader; GUIDE.md lists the rules and the few deliberate differences.
+
+### Added
+
+- String channels and time channels (`eTimeUsi` in the .tdx, ISO text in the header) are
+  read; times are naive local `datetime` values, rounded as NI rounds them.
+- Values written inline in the header (numbers, strings, times), narrowed and rounded as
+  NI's reader does.
+- `implicit_constant`, `raw_linear` and `raw_linear_external` channels, interleaved
+  `block_bm` layouts and the signed byte type `eSInt8Usi`.
+- `properties` on `TdmFile`, `Group` and `Channel`: the typed custom properties
+  (`wf_increment`, `wf_start_time`, ...), as a read-only, hashable, picklable mapping.
+- `Channel.numbers()`, `Channel.strings()` and `Channel.times()`: `data` typed as one kind.
+- GUIDE.md, and tests against LabVIEW 2026 output and NI's recorded reading of it.
+
+### Changed
+
+- `eInt8Usi` is an unsigned byte, as NI writes and reads it (0.2.1 read it as signed).
+- `Channel.data` is typed `tuple[float, ...] | tuple[str, ...] | tuple[datetime, ...]` and
+  `Channel.to_list()` `list[float] | list[str] | list[datetime]`.
+- `implicit_linear` follows NI's reader: the length comes from the row count first, a
+  single parameter gives a constant, and missing parameters come from the stored values
+  (0.2.1 produced `0, 1, 2, ...`); `implicit` is no longer accepted.
+- A reference to a missing value sequence or block, a header whose root is not `<tdm>`,
+  a DTD, an unknown encoding and malformed XML raise `TdmError`.
+- The .tdx must sit in the header's folder or below it unless `tdx_path` is given, and is
+  read in ranges, on demand, instead of whole.
+- A dataset may decode at most ten million values plus one per .tdx byte from the .tdx, as
+  many again by scaling and as many again by generation; shared references are decoded
+  once.
+- Error messages quote at most 40 characters of file text; the command cuts them at 300.
+- A .tdx name made only of dots or spaces, or holding characters no Windows file name can
+  hold, is refused; a .tdx name the system cannot open, or a .tdx that is a folder, raises
+  `TdmError`; `block_mr` layouts raise
+  `UnsupportedTdmError`; a missing .tdx no channel needs is no longer an error; the first of
+  two elements sharing an id is used. GUIDE.md "Upgrading from 0.2" lists every change.
+- `tdmread dump -f json` writes valid, ASCII-only JSON (non-finite floats as strings, times
+  as ISO text) and adds `datatype`; CSV writes times as ISO text and LF line endings; both
+  are written as UTF-8 whatever the console encoding. `tdmread channels` shows the `DT_*`
+  type of values written in the header and of generated channels; `info` and `channels` escape unprintable characters
+  in names. An interrupt exits with 130, and a closed output pipe or closed standard
+  stream ends the command quietly.
+
 ## [0.2.1]
 
 ### Changed

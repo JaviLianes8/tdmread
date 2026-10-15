@@ -34,3 +34,17 @@ def test_version_is_a_three_part_string() -> None:
 
 def test_the_package_ships_type_information() -> None:
     assert importlib.resources.files("tdmread").joinpath("py.typed").is_file()
+
+
+def test_the_package_has_no_runtime_dependencies_and_is_stable() -> None:
+    from pathlib import Path
+
+    import pytest
+
+    tomllib = pytest.importorskip("tomllib")  # Python 3.11 and later
+    project = tomllib.loads((Path(__file__).parent.parent / "pyproject.toml").read_text("utf-8"))
+    meta = project["project"]
+    assert meta["dependencies"] == []
+    assert meta["version"] == tdmread.__version__ == "1.0.0"
+    assert "Development Status :: 5 - Production/Stable" in meta["classifiers"]
+    assert set(meta["urls"]) >= {"Homepage", "Source", "Issues", "Changelog"}

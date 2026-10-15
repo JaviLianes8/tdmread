@@ -4,24 +4,34 @@ build-backend = "hatchling.build"
 
 [project]
 name = "tdmread"
-version = "0.2.1"
+version = "1.0.0"
 description = "Zero-dependency, typed reader for NI TDM/TDX files (XML .tdm header plus binary .tdx), using only the Python standard library"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "Javier Lianes", email = "javier@lianes8studio.com" }]
-keywords = ["tdm", "tdx", "ni", "labview", "diadem", "measurement", "parser"]
+keywords = ["tdm", "tdx", "ni", "labview", "diadem", "usi", "measurement", "data-acquisition", "reader"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Libraries",
     "Typing :: Typed",
 ]
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["ruff", "mypy", "pytest", "build", "twine"]
+dev = ["ruff", "mypy", "pytest", "build", "twine", "numpy"]
 numpy = ["numpy"]
 
 [project.scripts]
@@ -29,7 +39,7 @@ tdmread = "tdmread._cli:main"
 
 [project.urls]
 Homepage = "https://lianes8studio.com"
-Repository = "https://github.com/JaviLianes8/tdmread"
+Source = "https://github.com/JaviLianes8/tdmread"
 Issues = "https://github.com/JaviLianes8/tdmread/issues"
 Changelog = "https://github.com/JaviLianes8/tdmread/blob/main/CHANGELOG.md"
 LinkedIn = "https://www.linkedin.com/in/jlianes/"
@@ -39,19 +49,26 @@ Funding = "https://buymeacoffee.com/jlianesglrs"
 packages = ["src/tdmread"]
 
 [tool.hatch.build.targets.sdist]
-only-include = [
+include = [
     "src/tdmread",
     "tests",
     "scripts/fetch_upstream.py",
     "scripts/make_synthetic_tdm.py",
     "README.md",
+    "GUIDE.md",
     "CHANGELOG.md",
     "CONTRIBUTING.md",
     "LICENSE",
     "pyproject.toml",
 ]
 # Third-party samples are fetched locally for the tests and never shipped; only their manifest is.
-exclude = ["**/__pycache__", "**/*.pyc", "tests/upstream/*.tdm", "tests/upstream/*.tdx"]
+exclude = [
+    "**/__pycache__",
+    "**/*.pyc",
+    "**/*.log",
+    "tests/upstream/*.tdm",
+    "tests/upstream/*.tdx",
+]
 
 [tool.ruff]
 line-length = 100

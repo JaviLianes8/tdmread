@@ -18,6 +18,11 @@ pip install -r requirements-dev.txt
   `SineData` samples are never committed: `python scripts/fetch_upstream.py` downloads them
   into `tests/upstream` (checked against `tests/upstream/MANIFEST.json`) and their tests
   skip until then.
+- `tests/fixtures/labview2026` (files LabVIEW 2026 wrote) and `tests/fixtures/ni_probes`
+  (hand-made probes from `python scripts/make_ni_probes.py`) are compared with NI's
+  recorded reading in their `ni_view.json`. Re-recording needs Windows, LabVIEW 2026,
+  pywin32 and npTDMS: `python scripts/capture_ni.py OUT.json FILES...`. Update each
+  folder's `manifest.json` with any file you change.
 - Run `scripts/check.ps1` (format, lint, types, tests) and make sure it passes.
 - One logical change per commit, imperative subject line.
 

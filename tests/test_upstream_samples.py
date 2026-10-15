@@ -19,7 +19,8 @@ from tdmread import TdmFile, read_tdm
 
 FIXTURES = Path(__file__).parent / "upstream"
 pytestmark = pytest.mark.skipif(
-    not (FIXTURES / "SineData.tdx").is_file(), reason="run scripts/fetch_upstream.py"
+    not (FIXTURES / "SineData.tdx").is_file(),
+    reason="samples not fetched (scripts/fetch_upstream.py in the source repository)",
 )
 
 
@@ -43,8 +44,8 @@ def test_real_tdm_full_promise_end_to_end() -> None:
     assert first.datatype == "DT_DOUBLE"
     assert len(first) == 1000
     assert first.minimum is not None and first.maximum is not None
-    assert min(first.data) >= first.minimum - 1e-9
-    assert max(first.data) <= first.maximum + 1e-9
+    assert min(first.numbers()) >= first.minimum - 1e-9
+    assert max(first.numbers()) <= first.maximum + 1e-9
 
 
 def test_real_channel_values_match_the_sine_oracle() -> None:
@@ -55,11 +56,11 @@ def test_real_channel_values_match_the_sine_oracle() -> None:
     for name, scale in (("A = 1", 1.0), ("A = 2", 2.0), ("A = 4", 4.0), ("A = 16", 16.0)):
         channel = amps.channel(name)
         assert isinstance(channel.data, tuple) and len(channel.data) == 1000
-        error = max(abs(channel.data[i] - scale * base[i]) for i in range(1000))
+        error = max(abs(channel.numbers()[i] - scale * base[i]) for i in range(1000))
         assert error < 1e-9, f"{name} deviates from {scale} * sin(0.01 * i) by {error}"
 
     freqs = dataset.group("Frequencies")
-    error = max(abs(freqs.channel("F = 2").data[i] - math.sin(0.02 * i)) for i in range(1000))
+    error = max(abs(freqs.channel("F = 2").numbers()[i] - math.sin(0.02 * i)) for i in range(1000))
     assert error < 1e-9
 
 
@@ -86,7 +87,7 @@ def test_implicit_linear_fixture_generates_its_axis() -> None:
     assert len(channel) == 1000
     # generation_parameters "-0.5 1.2" means value[i] = -0.5 + 1.2 * i.
     expected = [-0.5 + 1.2 * index for index in range(1000)]
-    assert max(abs(channel.data[i] - expected[i]) for i in range(1000)) < 1e-9
+    assert max(abs(channel.numbers()[i] - expected[i]) for i in range(1000)) < 1e-9
 
 
 def test_implicit_fixture_still_reads_its_one_explicit_channel() -> None:

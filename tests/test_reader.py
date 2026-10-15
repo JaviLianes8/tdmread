@@ -118,7 +118,7 @@ def test_unsupported_sequence_representation_raises(tmp_path: Path) -> None:
     tdm.write_text(
         tdm.read_text(encoding="utf-8").replace(
             "<sequence_representation>explicit</sequence_representation>",
-            "<sequence_representation>raw_linear</sequence_representation>",
+            "<sequence_representation>implicit_saw</sequence_representation>",
             1,
         ),
         encoding="utf-8",

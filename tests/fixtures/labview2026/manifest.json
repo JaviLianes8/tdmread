@@ -1,0 +1,40 @@
+{
+ "labview": "LabVIEW 2026 Community 26.3.1f1 (Windows x64), NI USI exporter 21.5",
+ "files": {
+  "Example Channel Group File.tdm": {
+   "how": "written by the shipped example examples/File IO/DataPlugins/TDM/TDM Channel Groups/Write TDM Channel Groups.vi, run headless through LabVIEW's ActiveX server on 2026-10-14, copied unchanged",
+   "size": 7247,
+   "sha256": "931baa41e75595e3874737052419ba448020aa028c0a7760aa72257203984cb0"
+  },
+  "Example Channel Group File.tdx": {
+   "how": "written by the shipped example examples/File IO/DataPlugins/TDM/TDM Channel Groups/Write TDM Channel Groups.vi, run headless through LabVIEW's ActiveX server on 2026-10-14, copied unchanged",
+   "size": 3200,
+   "sha256": "7592908002ecb1908dd39595867f5c8096e50b37ab11161f6c3c8c6eb1ce9535"
+  },
+  "Example Event File.tdm": {
+   "how": "written by the shipped example examples/File IO/DataPlugins/TDM/TDM Event Data/Write TDM Event Data.vi, run headless through LabVIEW's ActiveX server on 2026-10-14, copied unchanged",
+   "size": 5708,
+   "sha256": "87c09c80e172194da05fecec546f557949224578d070f504fa89168d80dd0c28"
+  },
+  "Example Event File.tdx": {
+   "how": "written by the shipped example examples/File IO/DataPlugins/TDM/TDM Event Data/Write TDM Event Data.vi, run headless through LabVIEW's ActiveX server on 2026-10-14, copied unchanged",
+   "size": 87284,
+   "sha256": "0df7f2197645c48d9a940dacbf61e9dc550c669e1f39ff1147198b5a6a5b3387"
+  },
+  "gt_types_0.tdm": {
+   "how": "written on 2026-10-14 by LabVIEW's shipped vi.lib/Platform/storage/utility/Convert to TDM or TDMS.vi (target TDM, operation create) from gt_types.tdms made by scripts/make_tdms_source.py; copied unchanged",
+   "size": 17048,
+   "sha256": "c892ec05a05306e1d2471ec12a052af05f8c9bc7a1181663702a6499b73e6be3"
+  },
+  "gt_types_0.tdx": {
+   "how": "written on 2026-10-14 by LabVIEW's shipped vi.lib/Platform/storage/utility/Convert to TDM or TDMS.vi (target TDM, operation create) from gt_types.tdms made by scripts/make_tdms_source.py; copied unchanged",
+   "size": 12367,
+   "sha256": "d7531fd86f55eec0ccc1498ef095fa1f55e98531fffa379628f9541509b2334c"
+  },
+  "ni_view.json": {
+   "how": "how NI's software reads each .tdm here, recorded on 2026-10-14 by scripts/capture_ni.py",
+   "size": 119061,
+   "sha256": "16da599bd4e5ab75c2341ffd8de6af993367a06543610e7f85024ef0b7f5155f"
+  }
+ }
+}
