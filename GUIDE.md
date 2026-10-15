@@ -152,7 +152,7 @@ name and description under those names instead).
 | --- | --- |
 | `TdmFileNotFoundError` (a `TdmError` and a `FileNotFoundError`) | the header, or a `.tdx` a channel needs, is missing |
 | `UnsupportedTdmError` (a `TdmError`) | the dataset uses something tdmread does not read (see above) |
-| `TdmError` | anything else malformed: not XML, not a TDM header, a DTD, an unknown text encoding, a bad number or time, a reference to a missing sequence or block, a block past the end of the `.tdx`, a negative or non-integer count, a `.tdx` location outside the header folder, a generated size over the limit |
+| `TdmError` | anything else malformed: not XML, not a TDM header, a DTD, an unknown text encoding, a bad number or time, a reference to a missing sequence or block, a block past the end of the `.tdx`, a negative or non-integer count, a `.tdx` location outside the header folder or not a valid file name, a `.tdx` that is a folder, a generated size over the limit |
 
 Other `OSError`s (for example a permission error) propagate unchanged. Messages quote at
 most 40 characters of any text taken from a file. The command line prints errors as

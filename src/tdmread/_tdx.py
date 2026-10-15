@@ -26,7 +26,7 @@ def locate(header: Path, url: str | None, override: StrPath | None) -> Path:
     if not url:
         raise TdmError("the .tdm header does not name its .tdx file")
     posix, windows = PurePosixPath(url), PureWindowsPath(url)
-    if ":" in url or posix.is_absolute() or windows.is_absolute() or ".." in windows.parts:
+    if ":" in url or posix.anchor or windows.anchor or ".." in windows.parts:
         raise TdmError(f"the .tdx location {quote(url)} is outside the header's folder")
     if (
         any(ord(char) < 32 or char in _FORBIDDEN for char in url)
@@ -39,8 +39,10 @@ def locate(header: Path, url: str | None, override: StrPath | None) -> Path:
 class TdxSource:
     """Read ranges from a .tdx file, opening it only when a value is first needed."""
 
-    def __init__(self, path: Path) -> None:
+    def __init__(self, path: Path, label: str = "") -> None:
         self._path = path
+        # How messages name the file: the header's url (or the given path), quoted short.
+        self._label = quote(label or str(path))
         self._handle: BinaryIO | None = None
         self._size = 0
 
@@ -86,17 +88,16 @@ class TdxSource:
             try:
                 self._handle = open(self._path, "rb")  # noqa: SIM115 - closed by __exit__
             except FileNotFoundError:
-                name = quote(self._path.name)
-                raise TdmFileNotFoundError(f"TDX data not found: {name}") from None
+                raise TdmFileNotFoundError(f"TDX data not found: {self._label}") from None
             except PermissionError:
+                if self._path.is_dir():
+                    raise TdmError(f"the .tdx {self._label} is a folder") from None
                 raise
             except ValueError:
-                raise TdmError(f"cannot open the .tdx {quote(str(self._path))}") from None
+                raise TdmError(f"cannot open the .tdx {self._label}") from None
             except OSError as exc:
                 # A name the system cannot open (too long, reserved characters) is a bad
                 # dataset, not an operating-system failure.
-                raise TdmError(
-                    f"cannot open the .tdx {quote(str(self._path))}: {exc.strerror}"
-                ) from None
+                raise TdmError(f"cannot open the .tdx {self._label}: {exc.strerror}") from None
             self._size = os.fstat(self._handle.fileno()).st_size
         return self._handle

@@ -80,7 +80,8 @@ def read_tdm(tdm_path: StrPath, tdx_path: StrPath | None = None) -> TdmFile:
     url = file_el.get("url") if file_el is not None else None
     tdx = locate(header, url, tdx_path) if (blocks or tdx_path is not None) else header
     allowance = GENERATED_ALLOWANCE + (_size(tdx) if blocks else 0)
-    with TdxSource(tdx) as source:
+    label = str(tdx_path) if tdx_path is not None else (url or "")
+    with TdxSource(tdx, label) as source:
         ctx = Context(by_id, blocks, source, prefix, [allowance] * 3, {})
         groups = tuple(_read_groups(tdm_root, ctx))
     return TdmFile(

@@ -6,9 +6,10 @@ import struct
 from datetime import datetime
 from pathlib import Path
 
+import pytest
 from tdm_builder import Dataset, block, inline, stored
 
-from tdmread import read_tdm
+from tdmread import TdmError, read_tdm
 
 PROP = '<instance_attributes><{0}_attribute name="p">{1}</{0}_attribute></instance_attributes>'
 
@@ -57,3 +58,24 @@ def test_a_string_property_without_parts_is_empty(tmp_path: Path) -> None:
     )
     props = read_tdm(Dataset([channel]).write(tmp_path)).groups[0].channels[0].properties
     assert dict(props) == {"a": "", "b": ""}
+
+
+@pytest.mark.parametrize("url", ["\\Windows\\win.ini", "\\x.tdx", "/x.tdx"])
+def test_a_rooted_tdx_location_is_refused(tmp_path: Path, url: str) -> None:
+    dataset = Dataset([stored(0, "double_sequence", "i")], block("i", 0, 1, "eFloat64Usi"))
+    dataset.url = "data.tdx"
+    header = dataset.write(tmp_path)
+    header.write_text(header.read_text("utf-8").replace("data.tdx", url), "utf-8")
+    with pytest.raises(TdmError, match="outside the header's folder"):
+        read_tdm(header)
+
+
+def test_a_tdx_that_is_a_folder_or_missing_is_named_by_its_url(tmp_path: Path) -> None:
+    dataset = Dataset([stored(0, "double_sequence", "i")], block("i", 0, 1, "eFloat64Usi"))
+    dataset.url = "sub/x.tdx"
+    header = dataset.write(tmp_path)
+    with pytest.raises(TdmError, match=r"'sub/x\.tdx'"):
+        read_tdm(header)
+    (tmp_path / "sub" / "x.tdx").mkdir(parents=True)
+    with pytest.raises(TdmError, match=r"is a folder|cannot open"):
+        read_tdm(header)
