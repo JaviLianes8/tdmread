@@ -194,21 +194,22 @@ and times written oddly) were checked by hand-made probes that are not part of t
   later values into it: if any later value cannot be converted, NI keeps the first value
   of every repeated name of that element, otherwise the last converted value wins;
   tdmread takes the last value as written. Real files never repeat a name.
-- NI reads only the first 60 characters of a number written as text (so a number whose
-  first 60 characters, sign included, are all zeros reads as 0) and reads `inf`,
-  `Infinity` and `-Infinity` as 0 (its DataStore API also returns every non-finite value
-  as empty); tdmread reads the whole number (up to 400 characters; longer ones raise
-  `TdmError`, or stay raw text in a property) and reads those spellings as infinities.
-- NI reads the leading `YYYY-MM-DDTHH:MM:SS[.fraction]` of a header time and ignores the
-  rest (a `Z` or `+02:00` zone is ignored, not applied; `,5` drops the fraction), gives an
-  empty value for most other spellings (date only, no seconds, one-digit fields), returns
-  invalid or negative years when the year is not four digits, and returns year 0000 as is; tdmread accepts only that exact form (with an optional bare trailing
-  dot) in years 1 to 9999 and raises `TdmError` for anything else, or keeps the raw text
-  of such a property.
-- NI normalises impossible header times: any month outside 1 to 12 becomes January of the
-  same year, day 0 becomes day 1, and other overflows roll over (`2026-02-30` becomes
-  March 2, second 60 the next minute); tdmread raises `TdmError` for such a value, or keeps the raw text of
-  such a property.
+- Numbers and times written as text in unusual ways: NI's reader is lenient and its
+  results depend on the exact spelling. Examples observed: it reads only the first 60
+  characters of a number (60 zeros then a digit read as 0); it recognises only the exact
+  non-finite spellings `INF`, `-INF` and `NaN` and reads others such as `inf`, `+INF`,
+  `Infinity` or `nan` as 0 (its DataStore API returns non-finite values as empty); for a
+  header time it reads a leading `YYYY-MM-DDTHH:MM:SS[.fraction]` and ignores the rest (a
+  `Z` or `+02:00` zone is ignored, not applied; `,5` drops the fraction), drops or empties
+  most other spellings, turns some years with more or fewer than four digits into
+  unrelated or negative years, keeps year 0000, and normalises impossible dates (any month
+  outside 1 to 12 becomes January, day 0 becomes day 1, other overflows roll over). tdmread
+  accepts only the forms described above: numbers in decimal or exponent notation up to
+  400 characters with any case of `inf`, `infinity` and `nan`, and times in exactly that
+  form (an optional bare trailing dot allowed) in years 1 to 9999. Anything else raises
+  `TdmError`, or stays raw text in a property.
+- NI matches property names regardless of case (`Aa` and `aa` are one property); tdmread
+  keeps them apart.
 - NI reads a property value that does not parse by its leading number (`abc` as 0, `1.5`
   as 1 in a `long_attribute`) and drops a time property that does not parse; tdmread keeps
   the raw text.
