@@ -1,5 +1,7 @@
 # tdmread
 
+[![Lianes8 Certified](https://lianes8studio.com/certified/lianes8-certified-badge.svg)](https://lianes8studio.com/certified)
+
 Read NI TDM/TDX measurement files (an XML `.tdm` header plus a binary `.tdx` data file,
 as written by LabVIEW, DIAdem and other NI software) in plain Python: no dependencies,
 nothing to compile, fully typed.
