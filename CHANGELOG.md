@@ -6,6 +6,11 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-25
+
+### Fixed
+- Command line: on Windows, when the standard output or error is a console that gets closed, the exit code is now the documented one instead of 120.
+
 ## [1.0.0] - 2026-10-15
 
 The public API is now stable: `read_tdm`, `TdmFile`, `Group`, `Channel`, `FileMetadata`,

@@ -6,7 +6,7 @@ from ._errors import TdmError, TdmFileNotFoundError, UnsupportedTdmError
 from ._model import FileMetadata, Group, TdmFile
 from ._reader import read_tdm
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 __all__ = [
     "Channel",

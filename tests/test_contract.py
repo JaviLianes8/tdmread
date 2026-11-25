@@ -45,6 +45,6 @@ def test_the_package_has_no_runtime_dependencies_and_is_stable() -> None:
     project = tomllib.loads((Path(__file__).parent.parent / "pyproject.toml").read_text("utf-8"))
     meta = project["project"]
     assert meta["dependencies"] == []
-    assert meta["version"] == tdmread.__version__ == "1.0.0"
+    assert meta["version"] == tdmread.__version__ == "1.0.1"
     assert "Development Status :: 5 - Production/Stable" in meta["classifiers"]
     assert set(meta["urls"]) >= {"Homepage", "Source", "Issues", "Changelog"}

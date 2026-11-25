@@ -101,6 +101,12 @@ def _silence(stream: TextIO | None) -> None:
             os.close(devnull)
     except (OSError, ValueError, AttributeError):
         pass
+    # On Windows a console stream keeps writing through WriteConsoleW, which fails on the null
+    # device, so the Python-level object is swapped as well (the interpreter's final flush is safe).
+    if sys.stdout is stream:
+        sys.stdout = open(os.devnull, "w", encoding="utf-8")
+    if sys.stderr is stream:
+        sys.stderr = open(os.devnull, "w", encoding="utf-8")
 
 
 class _Parser(argparse.ArgumentParser):

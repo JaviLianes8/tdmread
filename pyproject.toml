@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "tdmread"
-version = "1.0.0"
+version = "1.0.1"
 description = "Zero-dependency, typed reader for NI TDM/TDX files (XML .tdm header plus binary .tdx), using only the Python standard library"
 readme = "README.md"
 requires-python = ">=3.10"
